@@ -44,4 +44,4 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 [github-repo]: https://github.com/cgoldberg/git-scripts
 [bash-home]: https://www.gnu.org/software/bash
 [python-home]: https://www.python.org
-[mit-license]: https://raw.githubusercontent.com/cgoldberg/git-scripts/refs/heads/master/LICENSE
+[mit-license]: https://raw.githubusercontent.com/cgoldberg/git-scripts/refs/heads/main/LICENSE
