@@ -1,6 +1,6 @@
 # git-scripts
 
-### A collection of scripts for working with [Git][git-home] and [GitHub][github-home]
+## A collection of scripts for working with [Git][git-home] and [GitHub][github-home]
 
 All script are written in [Bash][bash-home] or [Python][python-home].
 
