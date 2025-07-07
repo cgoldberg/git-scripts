@@ -33,7 +33,7 @@ default_branch=$(git remote show origin | sed -n "/HEAD branch/s/.*: //p")
 git stash --quiet
 echo "switching to branch '${default_branch}'"
 git checkout --quiet "${default_branch}"
-echo "pulling '${default_branch}'"
+echo "rebasing '${default_branch}'"
 git pull --rebase --stat
 echo
 branches=($(git branch --format="%(refname:short)"))
@@ -41,7 +41,7 @@ branches_without_default=(${branches[@]/${default_branch}})
 for branch in "${branches_without_default[@]}"; do
     echo "switching to branch '${branch}'"
     git checkout --quiet "${branch}"
-    echo "pulling '${branch}'"
+    echo "rebasing '${branch}'"
     git pull --rebase --stat
     echo
 done
