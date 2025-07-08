@@ -4,11 +4,11 @@
 #
 # git-sync - rebase all local git branches in current repo from remote tracking branches
 #
-# - stashes uncommitted changes
-# - switches to default branch and does pull/rebase
-# - switches to every other local branch and does pull/rebase
-# - switches back to original branch
-# - only works if in a git repo
+# - update refs from remote and prune stale refs
+# - stash uncommitted changes
+# - switch to default branch and do pull/rebase
+# - switch to every other local branch and do pull/rebase
+# - switch back to original branch
 #
 # usage:
 #  - add this script to a directory on your PATH
@@ -30,6 +30,8 @@ fi
 echo
 current_branch=$(git branch --show-current)
 default_branch=$(git remote show origin | sed -n "/HEAD branch/s/.*: //p")
+git fetch --prune --verbose
+echo
 git stash --quiet
 echo "switching to branch '${default_branch}'"
 git checkout --quiet "${default_branch}"
