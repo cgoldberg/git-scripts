@@ -5,6 +5,7 @@
 # git-syncrepo - GitHub remote repo sync
 #
 # - syncs git branches on a remote fork from their parent repo
+# - fetches refs and prunes stale local branches
 # - creates a local tracking branch for every remote branch
 # - only works if inside a local git repo that was cloned from a fork
 # - requires GitHub CLI (https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
@@ -15,8 +16,6 @@
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-syncrepo)
 #  - run `git syncrepo` from any directory in a local git repo
-
-set -e
 
 die() { echo "$*" 1>&2 ; exit 1; }
 
@@ -45,20 +44,23 @@ fi
 
 default_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
 
+echo "fetching refs ..."
 echo
-echo "creating local tracking branches if needed"
+git fetch --all --prune --verbose
+echo
+echo "creating local tracking branches ..."
 for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
     branch="${remote_branch#remotes/origin/}"
     git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
 done
 echo
-echo "syncing '${default_branch}' branch on remote fork from its parent"
+echo "syncing '${default_branch}' branch on remote fork from its parent ..."
 gh repo sync "${username_repo}" --branch "${default_branch}" || die
 echo
 branches=($(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}'))
 branches_without_default=(${branches[@]/${default_branch}})
 for branch in "${branches_without_default[@]}"; do
-    echo "syncing '${branch}' branch on remote fork from its parent"
+    echo "syncing '${branch}' branch on remote fork from its parent ..."
     gh repo sync "${username_repo}" --branch "${branch}"
     echo
 done
