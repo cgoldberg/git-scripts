@@ -21,7 +21,9 @@ fi
 
 git fetch --verbose
 echo
+
 default_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
+
 for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
     branch="${remote_branch#remotes/origin/}"
     git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"

@@ -44,21 +44,26 @@ fi
 
 default_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
 
+echo
 echo "fetching refs ..."
 echo
 git fetch --all --prune --verbose
 echo
+
 echo "creating local tracking branches ..."
 for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
     branch="${remote_branch#remotes/origin/}"
     git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
 done
 echo
+
 echo "syncing '${default_branch}' branch on remote fork from its parent ..."
 gh repo sync "${username_repo}" --branch "${default_branch}" || die
 echo
+
 branches=($(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}'))
 branches_without_default=(${branches[@]/${default_branch}})
+
 for branch in "${branches_without_default[@]}"; do
     echo "syncing '${branch}' branch on remote fork from its parent ..."
     gh repo sync "${username_repo}" --branch "${branch}"

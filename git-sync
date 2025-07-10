@@ -25,9 +25,10 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "fatal: not a git repository"
 fi
 
-echo
 current_branch=$(git branch --show-current)
 default_branch=$(git remote show origin | sed -n "/HEAD branch/s/.*: //p")
+
+echo
 git fetch --prune --verbose
 echo
 git stash --quiet
@@ -36,8 +37,10 @@ git checkout --quiet "${default_branch}"
 echo "rebasing '${default_branch}'"
 git pull --rebase --stat
 echo
+
 branches=($(git branch --format="%(refname:short)"))
 branches_without_default=(${branches[@]/${default_branch}})
+
 for branch in "${branches_without_default[@]}"; do
     echo "switching to branch '${branch}'"
     git checkout --quiet "${branch}"
@@ -45,5 +48,6 @@ for branch in "${branches_without_default[@]}"; do
     git pull --rebase --stat
     echo
 done
+
 git checkout --quiet "${current_branch}"
 git stash pop --quiet 2>/dev/null || true

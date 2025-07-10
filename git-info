@@ -31,15 +31,14 @@ while [[ ! -d .git ]] && [[ ! $(pwd) = "/" ]]; do
 done
 
 current_branch=$(git branch --show-current)
-
-echo
-
-echo -e "\033[1;36m== Stats (branch: "${current_branch}") ==\033[0m"
 num_commits=$(git rev-list --count "${current_branch}" | LC_NUMERIC="en_US.UTF-8" numfmt --grouping)
 num_files=$(find . -type f ! -path './.git/*' | wc -l)
 num_tracked_files=$(git ls-files | wc -l)
 size_disk=$(du -hs | awk '{print $1}')
 size_tracked=$(git ls-files -z | xargs -0 stat -c %s | awk '{total+=$1} END {printf("%.0f\n",total)}' | numfmt --to=iec)
+
+echo
+echo -e "\033[1;36m== Stats (branch: "${current_branch}") ==\033[0m"
 echo -e "commits: ${num_commits}" | indent
 echo -e "files: ${num_files} (excluding .git directory)" | indent
 echo -e "tracked files: ${num_tracked_files}" | indent
