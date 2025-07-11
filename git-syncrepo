@@ -28,7 +28,7 @@ die() {
 }
 
 if [ ! -n "${GITHUB_USERNAME}" ]; then
-    die "fatal: GITHUB_USERNAME environment variable not set"
+    die "fatal: 'GITHUB_USERNAME' environment variable not set"
 fi
 
 if [ ! -x "$(command -v git)" ]; then
@@ -50,7 +50,7 @@ fi
 repo="${GITHUB_USERNAME}/"$(basename $(basename $(git remote get-url origin)) '.git')
 
 if [[ $(gh repo view "${repo}" --json isFork) == *"false"* ]]; then
-    die "fatal: ${repo} is not a fork"
+    die "fatal: '${repo}' is not a fork"
 fi
 
 parent_repo=$(gh repo set-default --view 2>/dev/null)
