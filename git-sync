@@ -38,10 +38,10 @@ sync_branch () {
     git pull --rebase --stat
 }
 
-branches=($(git branch --format="%(refname:short)"))
-branches_without_default=(${branches[@]/${default_branch}})
 current_branch=$(git branch --show-current)
 default_branch=$(git remote show origin | sed -n "/HEAD branch/s/.*: //p")
+branches=($(git branch --format="%(refname:short)"))
+branches_without_default=(${branches[@]/${default_branch}})
 
 echo
 echo "fetching refs ..."
