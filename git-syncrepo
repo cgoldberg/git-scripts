@@ -67,7 +67,7 @@ sync_parent_branch () {
     echo "syncing '$1' branch on remote fork from its parent ..."
     if gh repo sync "${repo}" --branch "$1" >/dev/null; then
         tput setaf 10; echo -en "\u2714  "; tput sgr0
-        echo "synced the '${GITHUB_USERNAME}:$1' branch from '${parent_repo%%/*}:$1'"
+        echo "synced '${GITHUB_USERNAME}:$1' branch from '${parent_repo%%/*}:${default_branch}'"
     fi
 }
 
