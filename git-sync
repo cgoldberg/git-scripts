@@ -10,12 +10,18 @@
 # - switch to every other local branch and do pull/rebase
 # - switch back to original branch
 #
-# usage:
+# instructions:
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-sync)
-#  - run `git sync` from any directory in a local git repo
+#  - run 'git sync' from any directory in a local git repo
 
-die() { echo "$*" 1>&2 ; exit 1; }
+die() {
+    tput setaf 1
+    echo -en "\u274C "
+    tput sgr0
+    echo "$*" 1>&2
+    exit 1
+}
 
 if [ ! -x "$(command -v git)" ]; then
     die "fatal: can't find git"
@@ -25,6 +31,15 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "fatal: not a git repository"
 fi
 
+sync_branch () {
+    echo "switching to branch '$1'"
+    git checkout --quiet "$1"
+    echo "rebasing '$1'"
+    git pull --rebase --stat
+}
+
+branches=($(git branch --format="%(refname:short)"))
+branches_without_default=(${branches[@]/${default_branch}})
 current_branch=$(git branch --show-current)
 default_branch=$(git remote show origin | sed -n "/HEAD branch/s/.*: //p")
 
@@ -34,20 +49,11 @@ echo
 git fetch --all --prune --verbose
 echo
 git stash --quiet
-echo "switching to branch '${default_branch}'"
-git checkout --quiet "${default_branch}"
-echo "rebasing '${default_branch}'"
-git pull --rebase --stat
+sync_branch "${default_branch}"
 echo
 
-branches=($(git branch --format="%(refname:short)"))
-branches_without_default=(${branches[@]/${default_branch}})
-
 for branch in "${branches_without_default[@]}"; do
-    echo "switching to branch '${branch}'"
-    git checkout --quiet "${branch}"
-    echo "rebasing '${branch}'"
-    git pull --rebase --stat
+    sync_branch "${branch}"
     echo
 done
 

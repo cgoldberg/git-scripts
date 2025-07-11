@@ -9,15 +9,23 @@
 # - create a local tracking branch for every remote branch
 # - only works if inside a local git repo that was cloned from a fork
 # - requires GitHub CLI (https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
+# - must have parent repo set as default remote (run 'gh repo set-default')
 #
-# usage:
-#  - set an environment variable named `GITHUB_USERNAME` with your GitHub account name:
-#    - i.e.: `export GITHUB_USERNAME=cgoldberg`
+# instructions:
+#  - set an environment variable named 'GITHUB_USERNAME' with your GitHub account name:
+#    - i.e.: 'export GITHUB_USERNAME=cgoldberg'
+#  - run 'gh repo set-default' and set parent repo as default remote
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-syncrepo)
-#  - run `git syncrepo` from any directory in a local git repo
+#  - run 'git syncrepo' from any directory in a local git repo
 
-die() { echo "$*" 1>&2 ; exit 1; }
+die() {
+    tput setaf 1
+    echo -en "\u274C "
+    tput sgr0
+    echo "$*" 1>&2
+    exit 1
+}
 
 if [ ! -n "${GITHUB_USERNAME}" ]; then
     die "fatal: GITHUB_USERNAME environment variable not set"
@@ -36,23 +44,40 @@ if ! git remote --verbose | grep -q "github\.com"; then
 fi
 
 if [ ! -x "$(command -v gh)" ]; then
-    die "fatal: can't find GitHub CLI. follow installation instructions at: https://github.com/cli/cli"
+    die "fatal: can't find GitHub CLI (follow installation instructions at: https://github.com/cli/cli)"
 fi
 
-repo=$(basename $(basename $(git remote get-url origin)) ".git")
-username_repo="${GITHUB_USERNAME}/${repo}"
+repo="${GITHUB_USERNAME}/"$(basename $(basename $(git remote get-url origin)) '.git')
 
-if [[ $(gh repo view "${GITHUB_USERNAME}/${repo}" --json isFork) == *"false"* ]]; then
-    die "fatal: ${username_repo} is not a fork"
+if [[ $(gh repo view "${repo}" --json isFork) == *"false"* ]]; then
+    die "fatal: ${repo} is not a fork"
 fi
 
-default_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
+parent_repo=$(gh repo set-default --view 2>/dev/null)
+
+if [ -z "${parent_repo}" ]; then
+    die "fatal: remote repo is not set (run 'gh repo set-default' and set the parent as default remote)"
+fi
+
+if [ "${repo}" == "${parent_repo}" ]; then
+    die "fatal: remote repo is not the parent (run 'gh repo set-default' and set the parent as default remote)"
+fi
+
+sync_parent_branch () {
+    echo "syncing '$1' branch on remote fork from its parent ..."
+    if gh repo sync "${repo}" --branch "$1" >/dev/null; then
+        tput setaf 10; echo -en "\u2714  "; tput sgr0
+        echo "synced the '${GITHUB_USERNAME}:$1' branch from '${parent_repo%%/*}:$1'"
+    fi
+}
 
 echo
 echo "fetching refs ..."
 echo
 git fetch --all --prune --verbose
 echo
+
+default_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
 
 echo "creating local tracking branches ..."
 for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
@@ -61,15 +86,13 @@ for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${d
 done
 echo
 
-echo "syncing '${default_branch}' branch on remote fork from its parent ..."
-gh repo sync "${username_repo}" --branch "${default_branch}" || die
+sync_parent_branch "${default_branch}"
 echo
 
 branches=($(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}'))
 branches_without_default=(${branches[@]/${default_branch}})
 
 for branch in "${branches_without_default[@]}"; do
-    echo "syncing '${branch}' branch on remote fork from its parent ..."
-    gh repo sync "${username_repo}" --branch "${branch}"
+    sync_parent_branch "${branch}"
     echo
 done
