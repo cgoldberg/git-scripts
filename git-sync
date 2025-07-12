@@ -39,7 +39,7 @@ sync_branch () {
 }
 
 current_branch=$(git branch --show-current)
-default_branch=$(git remote show origin | sed -n "/HEAD branch/s/.*: //p")
+default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
 branches=($(git branch --format="%(refname:short)"))
 branches_without_default=(${branches[@]/${default_branch}})
 
@@ -51,11 +51,9 @@ echo
 git stash --quiet
 sync_branch "${default_branch}"
 echo
-
 for branch in "${branches_without_default[@]}"; do
     sync_branch "${branch}"
     echo
 done
-
 git checkout --quiet "${current_branch}"
 git stash pop --quiet 2>/dev/null || true
