@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#
+# Corey Goldberg (https://github.com/cgoldberg)
+#
+# git-clean-untracked - delete untracked files and directories with confirmation
+#
+# usage:
+#  - add this script to a directory on your PATH
+#  - make this script executable (chmod +x git-clean-untracked)
+#  - run `git clean-untracked` from any directory in a local git repo
+
+set -e
+
+die() {
+    tput setaf 1; echo -en "\u2717  "; tput sgr0
+    tput bold; echo "$*" 1>&2; tput sgr0
+    exit 1
+}
+
+if [ ! -x "$(command -v git)" ]; then
+    die "fatal: can't find git"
+fi
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    die "fatal: not a git repository"
+fi
+
+to_remove=$(git clean -d -f -x --dry-run)
+
+if [[ ! -n "${to_remove}" ]]; then
+    tput setaf 10; echo -en "\u2714  "; tput sgr0
+    echo "no untracked files"
+    exit
+fi
+
+echo
+echo "${to_remove}"
+echo
+echo "proceed?"
+echo
+
+select result in yes no; do
+    if [[ "$result" == "yes" ]]; then
+        echo
+        echo "cleaning in progress..."
+        echo
+        git clean -d -f -x
+        echo
+        tput setaf 10; echo -en "\u2714  "; tput sgr0
+        echo "done"
+    fi
+    break
+done
