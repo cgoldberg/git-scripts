@@ -2,9 +2,8 @@
 #
 # Corey Goldberg (https://github.com/cgoldberg)
 #
-# git-syncrepo - GitHub remote repo sync
+# git-syncrepo - sync branches on remote fork from parent repo (GitHub)
 #
-# - sync git branches on a remote fork from their parent repo
 # - fetch from remote and prune stale refs
 # - create a local tracking branch for every remote branch
 # - only works if inside a local git repo that was cloned from a fork

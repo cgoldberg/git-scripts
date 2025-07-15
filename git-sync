@@ -2,7 +2,7 @@
 #
 # Corey Goldberg (https://github.com/cgoldberg)
 #
-# git-sync - rebase all local git branches in current repo from remote tracking branches
+# git-sync - rebase all local branches in current repository from remote tracking branches
 #
 # - fetch from remote and prune stale refs
 # - stash uncommitted changes

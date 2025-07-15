@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# git-stat - Colorize git status to indicate branch state
+# git-stat - Colorize status to indicate branch state
 #
 # Author: Corey Goldberg (https://github.com/cgoldberg)
 #

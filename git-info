@@ -2,7 +2,7 @@
 #
 # Corey Goldberg (https://github.com/cgoldberg)
 #
-# git-info - show info about local git repository
+# git-info - show info about local repository
 #
 # usage:
 #  - add this script to a directory on your PATH

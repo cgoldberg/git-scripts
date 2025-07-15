@@ -14,11 +14,12 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 
 #### Contents:
 
-- [**git-info**](https://github.com/cgoldberg/git-scripts/blob/main/git-info) (bash): Show info about local git repo
-- [**git-score**](https://github.com/cgoldberg/git-scripts/blob/main/git-score) (python): Aggregate Git commit statistics
-- [**git-stat**](https://github.com/cgoldberg/git-scripts/blob/main/git-stat) (bash): Colorize git status to indicate branch state
-- [**git-sync**](https://github.com/cgoldberg/git-scripts/blob/main/git-sync) (bash): Rebase all local Git branches in current repo from remote tracking branches
-- [**git-syncrepo**](https://github.com/cgoldberg/git-scripts/blob/main/git-syncrepo) (bash): GitHub remote repo sync
+- [**git-clean-untracked**](https://github.com/cgoldberg/git-scripts/blob/main/git-clean-untracked) (bash): Delete untracked files and directories with confirmation
+- [**git-info**](https://github.com/cgoldberg/git-scripts/blob/main/git-info) (bash): Show information about local repository
+- [**git-score**](https://github.com/cgoldberg/git-scripts/blob/main/git-score) (python): Commit statistics
+- [**git-stat**](https://github.com/cgoldberg/git-scripts/blob/main/git-stat) (bash): Colorize status to indicate branch state
+- [**git-sync**](https://github.com/cgoldberg/git-scripts/blob/main/git-sync) (bash): Rebase all local branches in current repository from remote tracking branches
+- [**git-syncrepo**](https://github.com/cgoldberg/git-scripts/blob/main/git-syncrepo) (bash): sync branches on remote fork from parent repo (GitHub)
 - [**git-track-branches**](https://github.com/cgoldberg/git-scripts/blob/main/git-track-branches) (bash): Create a local tracking branch for every remote branch
 
 ----
