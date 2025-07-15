@@ -68,21 +68,23 @@ sync_parent_branch () {
     fi
 }
 
-default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
-branches=($(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}'))
-branches_without_default=(${branches[@]/${default_branch}})
-
 echo
 echo "fetching refs ..."
 echo
 git fetch --all --prune --verbose
 echo
+
+default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
+branches=($(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}'))
+branches_without_default=(${branches[@]/${default_branch}})
+
 echo "creating local tracking branches ..."
 for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
     branch="${remote_branch#remotes/origin/}"
     git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
 done
 echo
+
 sync_parent_branch "${default_branch}"
 echo
 for branch in "${branches_without_default[@]}"; do

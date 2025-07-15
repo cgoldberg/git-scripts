@@ -36,16 +36,17 @@ sync_branch () {
     git pull --rebase --stat
 }
 
-current_branch=$(git branch --show-current)
-default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
-branches=($(git branch --format="%(refname:short)"))
-branches_without_default=(${branches[@]/${default_branch}})
-
 echo
 echo "fetching refs ..."
 echo
 git fetch --all --prune --verbose
 echo
+
+current_branch=$(git branch --show-current)
+default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
+branches=($(git branch --format="%(refname:short)"))
+branches_without_default=(${branches[@]/${default_branch}})
+
 git stash --quiet
 sync_branch "${default_branch}"
 echo
