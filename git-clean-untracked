@@ -25,6 +25,11 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "fatal: not a git repository"
 fi
 
+# traverse up to root of repo
+while [[ ! -d .git ]] && [[ ! $(pwd) = "/" ]]; do
+    cd ..
+done
+
 to_remove=$(git clean -d -x --force --dry-run)
 
 if [[ ! -n "${to_remove}" ]]; then
