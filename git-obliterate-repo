@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+#
+# Corey Goldberg (https://github.com/cgoldberg)
+#
+# git-obliterate-repo - delete untracked files, local/remote branches/tags, and all commit history
+#
+# - delete all untracked files
+# - delete all remote branches except default branch
+# - delete all local branches except default branch
+# - delete all remote tags
+# - delete all local tags
+# - truncate all commit history
+# - force pushe default branch to remote
+#
+# usage:
+#  - add this script to a directory on your PATH
+#  - make this script executable (chmod +x git-clean-untracked)
+#  - run `git obliterate-repo` from any directory in a local git repo
+
+set -e
+
+die() {
+    tput setaf 1; echo -en "\u2717  "; tput sgr0
+    tput bold; echo "$*" 1>&2; tput sgr0
+    exit 1
+}
+
+obliterate () {
+    local default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
+    local temp_branch="{RANDOM}-temp-branch"
+    git checkout --force --quiet "${default_branch}"
+    git fetch --all --prune --quiet
+    git clean -d -x --force
+    git branch --remotes --no-color |  grep -v "${default_branch}" | sed 's/origin\///' \
+        | xargs --no-run-if-empty --max-args=1 git push origin --delete --quiet
+    git for-each-ref --format "%(refname:short)" refs/heads | grep -v "${default_branch}" \
+        | xargs --no-run-if-empty --max-args=1 git branch -D --quiet
+    git tag --list | xargs --no-run-if-empty --max-args=1 git push origin --delete --quiet
+    git tag --list | xargs --no-run-if-empty --max-args=1 git tag --delete --quiet
+    git checkout --quiet --orphan "${temp_branch}"
+    git commit --quiet --message "Initial commit"
+    git branch -D --quiet "${default_branch}"
+    git branch --move --quiet "${default_branch}"
+    git push --force --quiet origin "${default_branch}"
+    git branch --set-upstream-to=origin/"${default_branch}" "${default_branch}"
+}
+
+if [ ! -x "$(command -v git)" ]; then
+    die "fatal: can't find git"
+fi
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    die "fatal: not a git repository"
+fi
+
+# traverse up to root of repo
+while [[ ! -d .git ]] && [[ ! $(pwd) = "/" ]]; do
+    cd ..
+done
+
+echo
+tput setaf 1; echo "WARNING: this will obliterate your local and remote repo!"; tput sgr0
+echo
+echo "proceed?"
+echo
+
+select result in yes no; do
+    if [[ "${result}" == "yes" ]]; then
+        echo
+        echo "obliteration in progress..."
+        echo
+        obliterate
+        tput setaf 10; echo -en "\u2714  "; tput sgr0
+        echo "done"
+    fi
+    break
+done

@@ -16,6 +16,7 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 
 - [**git-clean-untracked**](https://github.com/cgoldberg/git-scripts/blob/main/git-clean-untracked) (bash): Delete untracked files and directories with confirmation
 - [**git-info**](https://github.com/cgoldberg/git-scripts/blob/main/git-info) (bash): Show information about local repository
+- [**git-obliterate-repo**](https://github.com/cgoldberg/git-obliterate-repo/blob/main/git-info) (bash): Delete untracked files, local/remote branches/tags, and all commit history
 - [**git-score**](https://github.com/cgoldberg/git-scripts/blob/main/git-score) (python): Commit statistics
 - [**git-stat**](https://github.com/cgoldberg/git-scripts/blob/main/git-stat) (bash): Colorize status to indicate branch state
 - [**git-sync**](https://github.com/cgoldberg/git-scripts/blob/main/git-sync) (bash): Rebase all local branches in current repository from remote tracking branches
@@ -27,7 +28,8 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 #### Requirements:
 
 - Git
-- Bash or Python
+- Bash
+- Python
 
 ----
 
