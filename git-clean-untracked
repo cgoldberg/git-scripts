@@ -45,7 +45,7 @@ echo "proceed?"
 echo
 
 select result in yes no; do
-    if [[ "$result" == "yes" ]]; then
+    if [[ "${result}" == "yes" ]]; then
         echo
         echo "cleaning in progress..."
         echo
