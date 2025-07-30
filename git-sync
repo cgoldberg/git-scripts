@@ -43,7 +43,7 @@ git fetch --all --prune --verbose
 echo
 
 current_branch=$(git branch --show-current)
-default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
+default_branch=$(git symbolic-ref HEAD | sed 's/.*\///')
 branches=($(git branch --format="%(refname:short)"))
 branches_without_default=(${branches[@]/${default_branch}})
 

@@ -26,7 +26,7 @@ die() {
 }
 
 obliterate () {
-    local default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
+    local default_branch=$(git symbolic-ref HEAD | sed 's/.*\///')
     local temp_branch="{RANDOM}-temp-branch"
     git checkout --force --quiet "${default_branch}"
     git fetch --all --prune --quiet
