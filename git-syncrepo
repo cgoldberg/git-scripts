@@ -92,6 +92,5 @@ for branch in "${branches_without_default[@]}"; do
     echo
 done
 
-echo
 tput setaf 10; echo -en "\u2714  "; tput sgr0
 echo "done"
