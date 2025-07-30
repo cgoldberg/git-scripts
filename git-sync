@@ -45,7 +45,7 @@ git fetch --all --prune --verbose
 echo
 
 current_branch=$(git branch --show-current)
-default_branch=$(git symbolic-ref HEAD | sed 's/.*\///')
+default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
 branches=($(git branch --format="%(refname:short)"))
 branches_without_default=(${branches[@]/${default_branch}})
 
@@ -54,7 +54,6 @@ for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${d
     echo "creating local tracking branch for: ${branch}"
     git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
 done
-echo
 
 git stash --quiet
 sync_branch "${default_branch}"

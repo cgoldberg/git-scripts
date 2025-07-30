@@ -26,7 +26,7 @@ fi
 git fetch --prune --verbose
 echo
 
-default_branch=$(git symbolic-ref HEAD | sed 's/.*\///')
+default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
 
 for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
     branch="${remote_branch#remotes/origin/}"

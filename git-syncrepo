@@ -74,7 +74,7 @@ echo
 git fetch --all --prune --verbose
 echo
 
-default_branch=$(git symbolic-ref HEAD | sed 's/.*\///')
+default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
 branches=($(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}'))
 branches_without_default=(${branches[@]/${default_branch}})
 
