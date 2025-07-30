@@ -90,6 +90,3 @@ for branch in "${branches_without_default[@]}"; do
     sync_parent_branch "${branch}"
     echo
 done
-
-tput setaf 10; echo -en "\u2714  "; tput sgr0
-echo "done syncing remote fork with parent"
