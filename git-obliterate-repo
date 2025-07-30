@@ -14,8 +14,8 @@
 #
 # usage:
 #  - add this script to a directory on your PATH
-#  - make this script executable (chmod +x git-clean-untracked)
-#  - run `git obliterate-repo` from any directory in a local git repo
+#  - make this script executable (chmod +x git-obliterate-repo)
+#  - run 'git obliterate-repo' from any directory in a local git repo
 
 set -e
 

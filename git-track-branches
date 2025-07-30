@@ -7,7 +7,7 @@
 # usage:
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-track-branches)
-#  - run `git track-branches` from any directory in a local git repo
+#  - run 'git track-branches' from any directory in a local git repo
 
 die() {
     tput setaf 1; echo -en "\u2717  "; tput sgr0
