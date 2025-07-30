@@ -47,6 +47,13 @@ default_branch=$(git symbolic-ref HEAD | sed 's/.*\///')
 branches=($(git branch --format="%(refname:short)"))
 branches_without_default=(${branches[@]/${default_branch}})
 
+for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
+    branch="${remote_branch#remotes/origin/}"
+    echo "creating local tracking branch for: ${branch}"
+    git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
+done
+echo
+
 git stash --quiet
 sync_branch "${default_branch}"
 echo
@@ -56,3 +63,7 @@ for branch in "${branches_without_default[@]}"; do
 done
 git checkout --quiet "${current_branch}"
 git stash pop --quiet 2>/dev/null || true
+
+echo
+tput setaf 10; echo -en "\u2714  "; tput sgr0
+echo "done"

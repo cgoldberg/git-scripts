@@ -30,5 +30,6 @@ default_branch=$(git symbolic-ref HEAD | sed 's/.*\///')
 
 for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
     branch="${remote_branch#remotes/origin/}"
+    echo "creating local tracking branch for: ${branch}"
     git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
 done

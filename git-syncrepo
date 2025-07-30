@@ -11,8 +11,8 @@
 # - must have parent repo set as default remote (run 'gh repo set-default')
 #
 # instructions:
-#  - set an environment variable named 'GITHUB_USERNAME' with your GitHub account name:
-#    - i.e.: 'export GITHUB_USERNAME=cgoldberg'
+#  - set an environment variable named 'GITHUB_USERNAME' with your GitHub
+#    account name (i.e.: 'export GITHUB_USERNAME=cgoldberg')
 #  - run 'gh repo set-default' and set parent repo as default remote
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-syncrepo)
@@ -78,9 +78,9 @@ default_branch=$(git symbolic-ref HEAD | sed 's/.*\///')
 branches=($(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}'))
 branches_without_default=(${branches[@]/${default_branch}})
 
-echo "creating local tracking branches ..."
 for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
     branch="${remote_branch#remotes/origin/}"
+    echo "creating local tracking branch for: ${branch}"
     git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
 done
 echo
@@ -91,3 +91,7 @@ for branch in "${branches_without_default[@]}"; do
     sync_parent_branch "${branch}"
     echo
 done
+
+echo
+tput setaf 10; echo -en "\u2714  "; tput sgr0
+echo "done"
