@@ -82,7 +82,7 @@ for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${d
 done
 echo
 
-branches=( "$(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}')" )
+branches=( $(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}') )
 branches_without_default=( ${branches[@]/${default_branch}} )
 
 sync_parent_branch "${default_branch}"
