@@ -93,9 +93,9 @@ colors=(
     "${staged}"
     "${unmerged}"
 )
-for i in ${!messages[@]}; do
+for i in "${!messages[@]}"; do
     message=${messages[i]}
-    if [[ "${status}" =~ "${message}" ]]; then
+    if [[ "${status}" =~ ${message} ]]; then
         color=${colors[i]}
         status=$(sed "s/${message}/\\\033[${color}m${message}\\\033[0m/" <<<"${status}")
     fi

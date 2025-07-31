@@ -32,7 +32,7 @@ done
 
 to_remove=$(git clean -d -x --force --dry-run)
 
-if [[ ! -n "${to_remove}" ]]; then
+if [[ -z "${to_remove}" ]]; then
     tput setaf 10; echo -en "\u2714  "; tput sgr0
     echo "no untracked files"
     exit

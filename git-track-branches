@@ -33,7 +33,7 @@ if [ ${#remote_branches_without_default[@]} -eq 0 ]; then
     die "no remote branches to track (only '${default_branch}' exists)"
 fi
 
-for remote_branch in ${remote_branches_without_default[@]}; do
+for remote_branch in "${remote_branches_without_default[@]}"; do
     branch="${remote_branch#remotes/origin/}"
     git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
 done

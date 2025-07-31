@@ -54,7 +54,7 @@ echo
 
 current_branch=$(git branch --show-current)
 branches=( $(git branch --format="%(refname:short)") )
-branches_without_default=( ${branches[@]/${default_branch}} )
+branches_without_default=( "${branches[@]/${default_branch}}" )
 
 git stash --quiet
 sync_branch "${default_branch}"

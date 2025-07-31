@@ -24,7 +24,7 @@ die() {
     exit 1
 }
 
-if [ ! -n "${GITHUB_USERNAME}" ]; then
+if [ -z "${GITHUB_USERNAME}" ]; then
     die "fatal: 'GITHUB_USERNAME' environment variable not set"
 fi
 
@@ -44,7 +44,7 @@ if [ ! -x "$(command -v gh)" ]; then
     die "fatal: can't find GitHub CLI (follow installation instructions at: https://github.com/cli/cli)"
 fi
 
-repo="${GITHUB_USERNAME}/"$(basename $(basename $(git remote get-url origin)) '.git')
+repo="${GITHUB_USERNAME}/$(basename $(basename $(git remote get-url origin)) '.git')"
 
 if [[ $(gh repo view "${repo}" --json isFork) == *"false"* ]]; then
     die "fatal: '${repo}' is not a fork"
@@ -82,7 +82,7 @@ for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${d
 done
 echo
 
-branches=( $(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}') )
+branches=( "$(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}')" )
 branches_without_default=( ${branches[@]/${default_branch}} )
 
 sync_parent_branch "${default_branch}"
