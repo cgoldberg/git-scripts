@@ -4,10 +4,11 @@
 #
 # git-clean-untracked - delete untracked files and directories with confirmation
 #
-# usage:
+# usage/examples:
 #  - $ git clean-untracked (excluding ignored files)
 #  - $ git clean-untracked -a (including ignored files)
-#  - $ git clean-untracked -X (only ignored files)
+#  - $ git clean-untracked -i (only ignored files)
+#  - $ git clean-untracked -f (no confirmation)
 #
 # instructions:
 #  - add this script to a directory on your PATH
@@ -22,17 +23,31 @@ die () {
     exit 1
 }
 
-while getopts ":ahX" opt; do
+clean_files () {
+    echo
+    eval "$1"
+    echo
+    tput setaf 10; echo -en "\u2714  "; tput sgr0
+    echo "done cleaning files"
+}
+
+while getopts ":afih" opt; do
     case "${opt}" in
         a )
-            OPT_ALL="true"
+            OPT_ALL_FILES="true"
             ;;
-        X )
-            OPT_ONLY_IGNORED="true"
+        f )
+            OPT_NO_CONFIRM="true"
+            ;;
+        i )
+            OPT_ONLY_IGNORED_FILES="true"
             ;;
         h )
-            echo -e "delete untracked files and directories\noptions:\n"\
-                "  -a : include ignored files\n   -X : only ignored files"
+            script_name="$(basename $0)"
+            echo -e "${script_name} - delete untracked files and directories\n\noptions:\n"\
+                " -a : include ignored files\n"\
+                " -f : no confirmation\n"\
+                " -i : only ignored files"
             exit
             ;;
         \? )
@@ -49,43 +64,40 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "fatal: not a git repository"
 fi
 
-if [ -n "${OPT_ALL}" ]; then
+if [ -n "${OPT_ALL_FILES}" ]; then
     cmd="git clean -d -x --force"
-    echo "selecting untracked files (including ignored files) ..."
-elif [ -n "${OPT_ONLY_IGNORED}" ]; then
+    echo "selecting untracked files (including ignored files)"
+elif [ -n "${OPT_ONLY_IGNORED_FILES}" ]; then
     cmd="git clean -d -X --force"
-    echo "selecting untracked files (only ignored files) ..."
+    echo "selecting untracked files (only ignored files)"
 else
     cmd="git clean -d --force"
-    echo "selecting untracked files (excluding ignored files) ..."
+    echo "selecting untracked files (excluding ignored files)"
 fi
-echo "command: ${cmd}"
 echo
 
-to_remove=$(eval "${cmd} --dry-run")
+files_to_remove=$(eval "${cmd} --dry-run")
 
-if [[ -z "${to_remove}" ]]; then
-    tput setaf 10; echo -en "\u2714 "; tput sgr0
+if [[ -z "${files_to_remove}" ]]; then
+    tput setaf 10; echo -en "\u2714  "; tput sgr0
     echo "no untracked files"
     exit
 fi
 
-tput setaf 1; echo "${to_remove}"; tput sgr0
+echo "command: ${cmd}"
 echo
-echo "proceed?"
-echo
+tput setaf 1; echo "${files_to_remove}"; tput sgr0
 
-select result in yes no; do
-    if [[ "${result}" == "yes" ]]; then
-        echo
-        echo "cleaning in progress..."
-        echo
-        eval "${cmd}"
-        echo
-        tput setaf 10; echo -en "\u2714  "; tput sgr0
-        echo "done cleaning files"
-    fi
-    break
-done
-
-
+if [ -n "${OPT_NO_CONFIRM}" ]; then
+    clean_files "${cmd}"
+else
+    echo
+    echo "proceed?"
+    echo
+    select result in "yes" "no"; do
+        if [[ "${result}" == "yes" ]]; then
+            clean_files "${cmd}"
+        fi
+        break
+    done
+fi
