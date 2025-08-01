@@ -5,6 +5,11 @@
 # git-clean-untracked - delete untracked files and directories with confirmation
 #
 # usage:
+#  - $ git clean-untracked (excluding ignored files)
+#  - $ git clean-untracked -a (including ignored files)
+#  - $ git clean-untracked -X (only ignored files)
+#
+# instructions:
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-clean-untracked)
 #  - run 'git clean-untracked' from any directory in a local git repo
@@ -17,6 +22,25 @@ die () {
     exit 1
 }
 
+while getopts ":ahX" opt; do
+    case "${opt}" in
+        a )
+            OPT_ALL="true"
+            ;;
+        X )
+            OPT_ONLY_IGNORED="true"
+            ;;
+        h )
+            echo -e "delete untracked files and directories\noptions:\n"\
+                "  -a : include ignored files\n   -X : only ignored files"
+            exit
+            ;;
+        \? )
+            die "invalid option"
+            ;;
+    esac
+done
+
 if [ ! -x "$(command -v git)" ]; then
     die "fatal: can't find git"
 fi
@@ -25,20 +49,27 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "fatal: not a git repository"
 fi
 
-# traverse up to root of repo
-while [[ ! -d .git ]] && [[ ! $(pwd) = "/" ]]; do
-    cd ..
-done
+if [ -n "${OPT_ALL}" ]; then
+    cmd="git clean -d -x --force"
+    echo "selecting untracked files (including ignored files) ..."
+elif [ -n "${OPT_ONLY_IGNORED}" ]; then
+    cmd="git clean -d -X --force"
+    echo "selecting untracked files (only ignored files) ..."
+else
+    cmd="git clean -d --force"
+    echo "selecting untracked files (excluding ignored files) ..."
+fi
+echo "command: ${cmd}"
+echo
 
-to_remove=$(git clean -d -x --force --dry-run)
+to_remove=$(eval "${cmd} --dry-run")
 
 if [[ -z "${to_remove}" ]]; then
-    tput setaf 10; echo -en "\u2714  "; tput sgr0
+    tput setaf 10; echo -en "\u2714 "; tput sgr0
     echo "no untracked files"
     exit
 fi
 
-echo
 tput setaf 1; echo "${to_remove}"; tput sgr0
 echo
 echo "proceed?"
@@ -49,10 +80,12 @@ select result in yes no; do
         echo
         echo "cleaning in progress..."
         echo
-        git clean -d -x --force
+        eval "${cmd}"
         echo
         tput setaf 10; echo -en "\u2714  "; tput sgr0
         echo "done cleaning files"
     fi
     break
 done
+
+

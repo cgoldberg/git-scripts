@@ -8,7 +8,7 @@
 #  - Bash
 #  - Git
 #
-# Usage:
+# Instructions:
 #  - Add this script to a directory on your PATH
 #  - Make this script executable (chmod +x git-stat)
 #  - Run 'git stat' from any directory in a local Git repo
