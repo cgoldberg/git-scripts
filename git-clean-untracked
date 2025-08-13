@@ -18,17 +18,21 @@
 set -e
 
 die () {
-    tput setaf 1; echo -en "\u2717 "; tput sgr0
+    tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
     exit 1
+}
+
+ok () {
+    tput bold; setaf 10; echo -en "\u2714 " 1>&2; tput sgr0
+    tput bold; echo "$*" 1>&2; tput sgr0
 }
 
 clean_files () {
     echo
     eval "$1"
     echo
-    tput setaf 10; echo -en "\u2714  "; tput sgr0
-    echo "done cleaning files"
+    ok "done cleaning files"
 }
 
 while getopts ":afih" opt; do
@@ -78,10 +82,8 @@ echo
 
 files_to_remove=$(eval "${cmd} --dry-run")
 
-if [[ -z "${files_to_remove}" ]]; then
-    tput setaf 10; echo -en "\u2714  "; tput sgr0
-    echo "no untracked files"
-    exit
+if [ -z "${files_to_remove}" ]; then
+    die "no untracked files"
 fi
 
 echo "command: ${cmd}"
