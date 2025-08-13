@@ -24,7 +24,7 @@ die () {
 }
 
 ok () {
-    tput bold; setaf 10; echo -en "\u2714  " 1>&2; tput sgr0
+    tput bold; tput setaf 10; echo -en "\u2714  " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
 }
 
