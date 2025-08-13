@@ -24,6 +24,11 @@ die () {
     exit 1
 }
 
+ok () {
+    tput bold; tput setaf 10; echo -en "\u2714  " 1>&2; tput sgr0
+    tput bold; echo "$*" 1>&2; tput sgr0
+}
+
 if [ -z "${GITHUB_USERNAME}" ]; then
     die "fatal: 'GITHUB_USERNAME' environment variable not set"
 fi
