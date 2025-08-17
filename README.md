@@ -20,7 +20,7 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 - [**git-score**](https://github.com/cgoldberg/git-scripts/blob/main/git-score) (python): Show commit statistics
 - [**git-stat**](https://github.com/cgoldberg/git-scripts/blob/main/git-stat) (bash): Colorize status to indicate branch state
 - [**git-sync**](https://github.com/cgoldberg/git-scripts/blob/main/git-sync) (bash): Rebase all local branches in current repository from remote tracking branches
-- [**git-syncrepo**](https://github.com/cgoldberg/git-scripts/blob/main/git-syncrepo) (bash): Sync branches in remote fork with main branch in parent GitHub repo
+- [**git-syncrepo**](https://github.com/cgoldberg/git-scripts/blob/main/git-syncrepo) (bash): Sync branches in remote fork with main branch in parent repo
 - [**git-track-branches**](https://github.com/cgoldberg/git-scripts/blob/main/git-track-branches) (bash): Create a local tracking branch for every remote branch
 
 ----

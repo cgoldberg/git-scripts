@@ -2,12 +2,12 @@
 #
 # Corey Goldberg (https://github.com/cgoldberg)
 #
-# git-syncrepo - sync branches in remote fork with main branch in parent github repo
+# git-syncrepo - sync branches in remote fork with main branch in parent repo
 #
 # - fetch from remote and prune stale refs
 # - create a local tracking branch for every remote branch (if -a option is used)
 # - sync branch in remote fork with main branch in parent repo (all branches if -a option is used)
-# - only works if inside a local git repo that was cloned from a fork
+# - only works if inside a local git repo that was cloned from a fork on GitHub
 # - requires GitHub CLI (https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
 # - must have parent repo set as default remote (run 'gh repo set-default')
 #
