@@ -41,9 +41,9 @@ while getopts ":ah" opt; do
             ;;
         h )
             script_name="${0##*/}"
-            echo -e "${script_name} - sync branches on remote fork with parent github repo\n"\
+            echo -e "${script_name} - sync branches in remote fork with main branch in parent repo\n"\
             "options:\n"\
-                " -a : include ignored files\n"\
+                " -a : sync all branches\n"\
                 " -h : show this help message"
             exit
             ;;
