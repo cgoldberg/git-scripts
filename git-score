@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# git-score - commit statistics
+# git-score - show commit statistics
 #
 # Author: Juan Batiz-Benet
 # Author: Matt Sparks
