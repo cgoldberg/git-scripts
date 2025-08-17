@@ -45,7 +45,7 @@ while getopts ":afih" opt; do
                 "options:\n"\
                 " -a : include ignored files\n"\
                 " -f : no confirmation\n"\
-                " -i : only ignored files"\
+                " -i : only ignored files\n"\
                 " -h : show this help message"
             exit
             ;;
