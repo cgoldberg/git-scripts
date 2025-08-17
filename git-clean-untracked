@@ -28,13 +28,6 @@ ok () {
     tput bold; echo "$*" 1>&2; tput sgr0
 }
 
-clean_files () {
-    echo
-    eval "$1"
-    echo
-    ok "done cleaning files"
-}
-
 while getopts ":afih" opt; do
     case "${opt}" in
         a )
@@ -91,14 +84,20 @@ echo
 tput setaf 1; echo "${files_to_remove}"; tput sgr0
 
 if [ -n "${OPT_NO_CONFIRM}" ]; then
-    clean_files "${cmd}"
+    echo
+    eval "${cmd}"
+    echo
+    ok "done cleaning files"
 else
     echo
     echo "proceed?"
     echo
     select result in "yes" "no"; do
-        if [[ "${result}" == "yes" ]]; then
-            clean_files "${cmd}"
+        if [ "${result}" == "yes" ]; then
+            echo
+            eval "${cmd}"
+            echo
+            ok "done cleaning files"
         fi
         break
     done
