@@ -2,13 +2,18 @@
 #
 # Corey Goldberg (https://github.com/cgoldberg)
 #
-# git-syncrepo - sync branches on remote fork with parent repo (GitHub)
+# git-syncrepo - sync branches in remote fork with main branch in parent github repo
 #
 # - fetch from remote and prune stale refs
-# - create a local tracking branch for every remote branch
+# - create a local tracking branch for every remote branch (if -a option is used)
+# - sync branch in remote fork with main branch in parent repo (all branches if -a option is used)
 # - only works if inside a local git repo that was cloned from a fork
 # - requires GitHub CLI (https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
 # - must have parent repo set as default remote (run 'gh repo set-default')
+#
+# usage/examples:
+#  - $ git clean-syncrepo (main branch only)
+#  - $ git clean-syncrepo -a (all branches)
 #
 # instructions:
 #  - set an environment variable named 'GITHUB_USERNAME' with your GitHub
@@ -28,6 +33,25 @@ ok () {
     tput bold; tput setaf 10; echo -en "\u2714  " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
 }
+
+while getopts ":ah" opt; do
+    case "${opt}" in
+        a )
+            OPT_ALL_FILES="true"
+            ;;
+        h )
+            script_name="${0##*/}"
+            echo -e "${script_name} - sync branches on remote fork with parent github repo\n"\
+            "options:\n"\
+                " -a : include ignored files\n"\
+                " -h : show this help message"
+            exit
+            ;;
+        \? )
+            die "invalid option"
+            ;;
+    esac
+done
 
 if [ -z "${GITHUB_USERNAME}" ]; then
     die "fatal: 'GITHUB_USERNAME' environment variable not set"
@@ -80,18 +104,22 @@ echo
 
 default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
 
-for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
-    branch="${remote_branch#remotes/origin/}"
-    git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
-done
-echo
+if [ -n "${OPT_ALL_FILES}" ]; then
+    for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
+        branch="${remote_branch#remotes/origin/}"
+        git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
+    done
+    echo
+fi
 
 branches=( $(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}') )
 branches_without_default=( ${branches[@]/${default_branch}} )
 
 sync_parent_branch "${default_branch}"
 echo
-for branch in "${branches_without_default[@]}"; do
-    sync_parent_branch "${branch}"
-    echo
-done
+if [ -n "${OPT_ALL_FILES}" ]; then
+    for branch in "${branches_without_default[@]}"; do
+        sync_parent_branch "${branch}"
+        echo
+    done
+fi
