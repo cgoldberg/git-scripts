@@ -40,8 +40,7 @@ while getopts ":afih" opt; do
             OPT_ONLY_IGNORED_FILES="true"
             ;;
         h )
-            script_name="${0##*/}"
-            echo -e "${script_name} - delete untracked files and directories\n"\
+            echo -e "delete untracked files and directories\n\n"\
                 "options:\n"\
                 " -a : include ignored files\n"\
                 " -f : no confirmation\n"\

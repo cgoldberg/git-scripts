@@ -40,9 +40,8 @@ while getopts ":ah" opt; do
             OPT_ALL_FILES="true"
             ;;
         h )
-            script_name="${0##*/}"
-            echo -e "${script_name} - sync branches in remote fork with main branch in parent repo\n"\
-            "options:\n"\
+            echo -e "sync branches in remote fork with main branch in parent repo\n\n"\
+                "options:\n"\
                 " -a : sync all branches\n"\
                 " -h : show this help message"
             exit
