@@ -6,7 +6,7 @@
 #
 # - fetch from remote and prune stale refs
 # - create a local tracking branch for every remote branch (if -a option is used)
-# - sync branch in remote fork with main branch in parent repo (all branches if -a option is used)
+# - sync current branch in remote fork with main branch in parent repo (all branches if -a option is used)
 # - only works if inside a local git repo that was cloned from a fork on GitHub
 # - requires GitHub CLI (https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
 # - must have parent repo set as default remote (run 'gh repo set-default')
@@ -111,13 +111,14 @@ if [ -n "${OPT_ALL_FILES}" ]; then
     echo
 fi
 
+current_branch=$(git branch --show-current)
 branches=( $(git branch --format='%(upstream:short)' | grep origin | awk -F '/' '{print $NF}') )
-branches_without_default=( ${branches[@]/${default_branch}} )
+branches_without_current=( ${branches[@]/${current_branch}} )
 
-sync_parent_branch "${default_branch}"
+sync_parent_branch "${current_branch}"
 echo
 if [ -n "${OPT_ALL_FILES}" ]; then
-    for branch in "${branches_without_default[@]}"; do
+    for branch in "${branches_without_current[@]}"; do
         sync_parent_branch "${branch}"
         echo
     done
