@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 #
-# Corey Goldberg (https://github.com/cgoldberg)
+# Copyright (c) 2025 Corey Goldberg (https://github.com/cgoldberg)
 #
 # git-obliterate-repo - delete untracked files, local/remote branches/tags, and all commit history
 #
-# - delete all untracked files
-# - delete all remote branches except default branch
-# - delete all local branches except default branch
-# - delete all remote tags
-# - delete all local tags
-# - truncate all commit history
-# - force pushe default branch to remote
+# - deletes all untracked files
+# - deletes all remote branches except default branch
+# - deletes all local branches except default branch
+# - deletes all remote tags
+# - deletes all local tags
+# - truncates all commit history
+# - force pushes default branch to remote
 #
 # instructions:
 #  - add this script to a directory on your PATH
@@ -50,7 +50,7 @@ obliterate () {
     git branch --set-upstream-to=origin/"${default_branch}" "${default_branch}"
 }
 
-if [ ! -x "$(command -v git)" ]; then
+if [ ! -x "$(type -pP git)" ]; then
     die "fatal: can't find git"
 fi
 

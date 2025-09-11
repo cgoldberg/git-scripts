@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 #
+# Copyright (c) 2025 Corey Goldberg (https://github.com/cgoldberg)
+#
 # git-stat - Colorize status to indicate branch state
-#
-# Author: Corey Goldberg (https://github.com/cgoldberg)
-#
-# Requirements:
-#  - Bash
-#  - Git
 #
 # Instructions:
 #  - Add this script to a directory on your PATH
@@ -21,7 +17,7 @@ die () {
     exit 1
 }
 
-if [ ! -x "$(command -v git)" ]; then
+if [ ! -x "$(type -pP git)" ]; then
     die "fatal: can't find git"
 fi
 

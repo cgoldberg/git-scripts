@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Corey Goldberg (https://github.com/cgoldberg)
+# Copyright (c) 2025 Corey Goldberg (https://github.com/cgoldberg)
 #
 # git-info - show info about local repository
 #
@@ -21,7 +21,7 @@ indent () {
     cat - | sed -e 's/^[[:space:]]*/   /g'
 }
 
-if [ ! -x "$(command -v git)" ]; then
+if [ ! -x "$(type -pP git)" ]; then
     die "fatal: can't find git"
 fi
 

@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 #
-# Corey Goldberg (https://github.com/cgoldberg)
+# Copyright (c) 2025 Corey Goldberg (https://github.com/cgoldberg)
 #
 # git-clean-untracked - delete untracked files and directories with confirmation
-#
-# usage/examples:
-#  - $ git clean-untracked (excluding ignored files)
-#  - $ git clean-untracked -a (including ignored files)
-#  - $ git clean-untracked -i (only ignored files)
-#  - $ git clean-untracked -f (no confirmation)
 #
 # instructions:
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-clean-untracked)
 #  - run 'git clean-untracked' from any directory in a local git repo
+#
+# usage/examples:
+#  - $ git clean-untracked  # excludes ignored files
+#  - $ git clean-untracked -a  # includes ignored files
+#  - $ git clean-untracked -i  # only ignored files
+#  - $ git clean-untracked -f  # no confirmation
 
 set -e
 
@@ -54,7 +54,7 @@ while getopts ":afih" opt; do
     esac
 done
 
-if [ ! -x "$(command -v git)" ]; then
+if [ ! -x "$(type -pP git)" ]; then
     die "fatal: can't find git"
 fi
 
