@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2025 Corey Goldberg (https://github.com/cgoldberg)
+#
+# git-prs - open GitHub Pull Requests in a web browser
+#
+# Requires:
+#  - jq
+#  - python
+#
+# Instructions:
+#  - add this script to a directory on your PATH
+#  - make this script executable (chmod +x git-prs)
+#
+# Usage/Example:
+#   Show a menu of all Pull Requests with status "open" submitted by user "cgoldberg"
+#   to "cgoldberg/my-repo". When a PR is selected, open it in default web browser:
+#     - $ git prs cgoldberg cgoldberg/my-repo
+
+set -e
+
+die () {
+    tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
+    tput bold; echo "$*" 1>&2; tput sgr0
+    exit 1
+}
+
+while getopts ":h" opt; do
+    case "${opt}" in
+        h )
+            echo -e "open GitHub Pull Requests in a web browser\n\n"\
+                "usage:\n"\
+                "  git prs <username> <owner/repo>\n\n"\
+            exit
+            ;;
+        \? )
+            die "invalid option"
+            ;;
+
+    esac
+done
+
+if [ -z "${1}" ] || [ -z "${2}" ]; then
+    die "please enter username and owner/repo"
+fi
+
+if [ ! -x "$(type -pP jq)" ]; then
+    die "fatal: can't find jq"
+fi
+
+if [ ! -x "$(type -pP python)" ]; then
+    die "fatal: can't find python"
+fi
+
+GITHUB_USERNAME="${1}"
+REPO="${2}"
+URL="https://api.github.com/repos/${REPO}/pulls"
+PARAMS="state=open&sort=updated&direction=asc&per_page=100000"
+
+mapfile -t results < <(
+    curl -sSL \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    "${URL}?${PARAMS}" \
+    | jq -r --arg GITHUB_USERNAME "${GITHUB_USERNAME}" \
+    '.[] | {username: .user.login, title: .title, url: .html_url}
+    | select(.username == $GITHUB_USERNAME).title,
+    select(.username == $GITHUB_USERNAME).url'
+ )
+
+i=0
+for i in "${!results[@]}"; do
+    if (( $(($i % 2 )) == 0 )); then
+        titles+=("${results[i]}")
+    else
+        urls+=("${results[i]}")
+    fi
+done
+echo
+for i in "${!titles[@]}"; do
+    echo "$((i + 1))) ${titles[i]}"
+done
+echo
+read -p "select a PR: " num
+url="${urls[(($num - 1))]}"
+echo
+echo "opening PR in web browser ..."
+echo "${url}"
+python -m webbrowser -t "${url}"
