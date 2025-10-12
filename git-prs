@@ -7,8 +7,8 @@
 # Requires:
 #  - Git
 #  - GitHub CLI
+#  - Python
 #  - jq
-#  - python
 #
 # - only works if inside a local git repo that was cloned from GitHub
 # - if the repo is a fork and the default remote is the parent repo,
