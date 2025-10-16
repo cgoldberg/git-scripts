@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2025 Corey Goldberg (https://github.com/cgoldberg)
+#
+# git-whack-branches - delete all local branches except default and current branch, even if not merged
+#
+# instructions:
+#  - add this script to a directory on your PATH
+#  - make this script executable (chmod +x git-whack-branches)
+#  - run 'git whack-branches' from any directory in a local git repo
+
+set -e
+
+die () {
+    tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
+    tput bold; echo "$*" 1>&2; tput sgr0
+    exit 1
+}
+
+ok () {
+    tput bold; tput setaf 10; echo -en "\u2714  " 1>&2; tput sgr0
+    tput bold; echo "$*" 1>&2; tput sgr0
+}
+
+delete_branches () {
+    local default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
+    git branch --no-color | grep -Ev "(^\*|${default_branch})" \
+        | xargs --no-run-if-empty git branch -D
+}
+
+if [ ! -x "$(type -pP git)" ]; then
+    die "fatal: can't find git"
+fi
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    die "fatal: not a git repository"
+fi
+
+echo
+warning_msg="WARNING: this will delete all local branches! (except default branch and current branch)"
+tput bold; tput setaf 1; echo "${warning_msg}"; tput sgr0
+echo
+echo "proceed?"
+echo
+
+select result in yes no; do
+    if [[ "${result}" == "yes" ]]; then
+        echo
+        delete_branches
+        echo
+        ok "done"
+    fi
+    break
+done
