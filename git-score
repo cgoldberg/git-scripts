@@ -4,10 +4,24 @@
 #
 # Author: Juan Batiz-Benet
 # Author: Matt Sparks
-# Updates: Corey Goldberg
+# Author: Corey Goldberg
 
+
+"""
+usage: git-score [-h] [-e PATTERN] [-i PATTERN] [-o ORDER] [-r REPO] [-s SINCE]
+
+options:
+  -h, --help             show this help message and exit
+  -e, --exclude PATTERN  exclude files matching PATTERN
+  -i, --include PATTERN  include files matching PATTERN
+  -o, --order ORDER      sorting order (e.g.: files, +delta)
+  -r, --repo REPO        repository path (can be specified multiple times)
+  -s, --since SINCE      date from (e.g.: '1 day', '2 weeks', '6 months, '04-01-2021')
+"""
+
+
+import argparse
 import operator
-import optparse
 import os
 import re
 import subprocess
@@ -124,7 +138,7 @@ class AuthorMap:
 
     def __init__(self):
         self._stats = {}
-        self._orderfield = "delta"  # default sorting field
+        self._orderfield = "commits"  # default sorting field
         self._ascending = False  # default sorting direction
 
     def __getitem__(self, author):
@@ -176,11 +190,11 @@ class AuthorMap:
 
         Args:
           order: the direction and field to sort by. Accepted orders:
-                 [+-]?(author|files|commits|added|removed|delta])
+                 +?(author|commits|files|delta|added|removed)
         """
-        if order[0] in ("-", "+"):  # direction was specified
+        if order[0] == "+":  # direction was specified
             self._orderfield = order[1:]
-            self._ascending = order[0] == "+"
+            self._ascending = True
         else:
             self._orderfield = order
             self._ascending = order == "author"  # descending default, except authors
@@ -219,7 +233,7 @@ class GitColor:
         return text
 
 
-def parseGitLogData(stream, options, path):
+def parseGitLogData(stream, args, path):
     class ParseCommitData:
         """A utility class to keep track of commit stats currently being parsed."""
 
@@ -241,8 +255,8 @@ def parseGitLogData(stream, options, path):
 
     stat_pattern = re.compile(STAT_PATTERN)
     file_pattern = re.compile(FILE_PATTERN)
-    exclude_pattern = re.compile(options.exclude) if options.exclude else None
-    include_pattern = re.compile(options.include) if options.include else None
+    exclude_pattern = re.compile(args.exclude) if args.exclude else None
+    include_pattern = re.compile(args.include) if args.include else None
 
     authorstats = AuthorMap()
 
@@ -264,8 +278,8 @@ def parseGitLogData(stream, options, path):
                 continue
 
             added, removed, filename = match.group(1, 2, 3)
-            exclude_file = options.exclude and exclude_pattern.match(filename)
-            include_file = not options.include or include_pattern.match(filename)
+            exclude_file = args.exclude and exclude_pattern.match(filename)
+            include_file = not args.include or include_pattern.match(filename)
             if include_file and not exclude_file:
                 ParseCommitData.added += int(added)
                 ParseCommitData.removed += int(removed)
@@ -280,84 +294,93 @@ def parseGitLogData(stream, options, path):
     return authorstats
 
 
-def gitStats(log_args, options, path=None):
+def gitStats(args, path=None):
     if path:
         old_path = os.getcwd()
         os.chdir(path)
     cmd = ["git", "log", "--numstat", "--pretty=format:+%an <%ae>"]
-    cmd.extend(log_args)
+    if args.since:
+        cmd.append(f"--since={args.since}")
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     if path:
         os.chdir(old_path)
-    return parseGitLogData(proc.stdout, options, path)
+    return parseGitLogData(proc.stdout, args, path)
 
 
-def gitStatsAggregated(log_args, options):
-    if options.repos:
-        return reduce(
-            operator.add, [gitStats(log_args, options, r) for r in options.repos]
-        )
+def gitStatsAggregated(args):
+    if args.repos:
+        return reduce(operator.add, [gitStats(args, r) for r in args.repos])
     else:
-        return gitStats(log_args, options)
+        return gitStats(args)
 
 
 def parseArgs():
-    parser = optparse.OptionParser()
-    parser.add_option(
+
+    def formatter(prog):
+        return argparse.HelpFormatter(prog, max_help_position=25)
+
+    parser = argparse.ArgumentParser(formatter_class=formatter)
+
+    parser.add_argument(
         "-e",
         "--exclude",
         dest="exclude",
         metavar="PATTERN",
         help="exclude files matching PATTERN",
     )
-    parser.add_option(
+    parser.add_argument(
         "-i",
         "--include",
         dest="include",
         metavar="PATTERN",
         help="include files matching PATTERN",
     )
-    parser.add_option(
+    parser.add_argument(
         "-o",
         "--order",
         dest="order",
-        metavar="ORDER",
-        help="sorting order (e.g., +delta)",
+        help="sorting order (e.g.: files, +delta)",
     )
-    parser.add_option(
+    parser.add_argument(
         "-r",
         "--repo",
         dest="repos",
         metavar="REPO",
         action="append",
-        help="repository path, can be specified multiple times",
+        help="repository path (can be specified multiple times)",
     )
-    options, args = parser.parse_args()
+    parser.add_argument(
+        "-s",
+        "--since",
+        dest="since",
+        help="date from (e.g.: '1 day', '2 weeks', '6 months, '04-01-2021')",
+    )
+    args = parser.parse_args()
 
     # Validate sorting field.
-    valid_fields = ("author", "files", "commits", "delta", "added", "removed")
-    if options.order:
-        has_prefix = options.order.startswith("+") or options.order.startswith("-")
+    valid_fields = ("author", "commits", "files", "delta", "added", "removed")
+    if args.order:
+        has_prefix = args.order.startswith("+")
         if (
-            len(options.order) < 2
-            or (has_prefix and options.order[1:] not in valid_fields)
-            or (not has_prefix and options.order not in valid_fields)
+            len(args.order) < 2
+            or (has_prefix and args.order[1:] not in valid_fields)
+            or (not has_prefix and args.order not in valid_fields)
         ):
-            parser.error("invalid sorting order: %s" % options.order)
+            parser.error("invalid sorting order: %s" % args.order)
 
-    return options, args
+    return args
 
 
 def main():
-    options, log_args = parseArgs()
-    stats = gitStatsAggregated(log_args, options)
+    args = parseArgs()
+    stats = gitStatsAggregated(args)
 
     if not len(stats):
         print("No commits found.")
         sys.exit(0)
 
-    if options.order:
-        stats.order(options.order)
+    if args.order:
+        stats.order(args.order)
 
     # Find length of longest author name.
     author_length = max([len(a) for a in stats])
