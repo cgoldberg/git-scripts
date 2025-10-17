@@ -2,21 +2,23 @@
 #
 # git-score - show commit statistics
 #
+# License: MIT
 # Author: Juan Batiz-Benet
 # Author: Matt Sparks
 # Author: Corey Goldberg
 
 
 """
-usage: git-score [-h] [-e PATTERN] [-i PATTERN] [-o ORDER] [-r REPO] [-s SINCE]
+usage: git-score [-h] [--email] [--exclude PATTERN] [--include PATTERN] [--order ORDER] [--repo REPO] [--since SINCE]
 
 options:
   -h, --help             show this help message and exit
-  -e, --exclude PATTERN  exclude files matching PATTERN
-  -i, --include PATTERN  include files matching PATTERN
-  -o, --order ORDER      sorting order (e.g.: files, +delta)
-  -r, --repo REPO        repository path (can be specified multiple times)
-  -s, --since SINCE      date from (e.g.: '1 day', '2 weeks', '6 months, '04-01-2021')
+  --email                include author email address (respects .mailmap)
+  --exclude PATTERN      exclude files matching PATTERN
+  --include PATTERN      include files matching PATTERN
+  --order ORDER          sort order (e.g.: files, +delta)
+  --repo REPO            repository path (can be specified multiple times)
+  --since SINCE          date from (e.g.: '1 day', '2 weeks', '6 months, '04-01-2025')
 """
 
 
@@ -298,7 +300,12 @@ def gitStats(args, path=None):
     if path:
         old_path = os.getcwd()
         os.chdir(path)
-    cmd = ["git", "log", "--numstat", "--pretty=format:+%an <%ae>"]
+    cmd = ["git", "log", "--numstat"]
+    # format placeholders %aN, %aE respect .mailmap
+    if args.email:
+        cmd.append("--pretty=format:+%aN <%aE>")
+    else:
+        cmd.append("--pretty=format:+%aN")
     if args.since:
         cmd.append(f"--since={args.since}")
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
@@ -322,27 +329,29 @@ def parseArgs():
     parser = argparse.ArgumentParser(formatter_class=formatter)
 
     parser.add_argument(
-        "-e",
+        "--email",
+        dest="email",
+        action='store_true',
+        help="include author email address (respects .mailmap)",
+    )
+    parser.add_argument(
         "--exclude",
         dest="exclude",
         metavar="PATTERN",
         help="exclude files matching PATTERN",
     )
     parser.add_argument(
-        "-i",
         "--include",
         dest="include",
         metavar="PATTERN",
         help="include files matching PATTERN",
     )
     parser.add_argument(
-        "-o",
         "--order",
         dest="order",
-        help="sorting order (e.g.: files, +delta)",
+        help="sort order (e.g.: files, +delta)",
     )
     parser.add_argument(
-        "-r",
         "--repo",
         dest="repos",
         metavar="REPO",
@@ -350,10 +359,9 @@ def parseArgs():
         help="repository path (can be specified multiple times)",
     )
     parser.add_argument(
-        "-s",
         "--since",
         dest="since",
-        help="date from (e.g.: '1 day', '2 weeks', '6 months, '04-01-2021')",
+        help="date from (e.g.: '1 day', '2 weeks', '6 months, '04-01-2025')",
     )
     args = parser.parse_args()
 
