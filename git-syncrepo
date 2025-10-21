@@ -72,10 +72,11 @@ if [ ! -x "$(type -pP gh)" ]; then
     die "fatal: can't find GitHub CLI (follow installation instructions at: https://github.com/cli/cli)"
 fi
 
-repo="${GITHUB_USERNAME}/$(basename $(basename $(git remote get-url origin)) '.git')"
+repo_name="$(basename $(basename $(git remote get-url origin)) '.git')"
+repo="${GITHUB_USERNAME}/${repo_name}"
 
-if [[ $(gh repo view "${repo}" --json isFork) == *"false"* ]]; then
-    die "fatal: '${repo}' is not a fork"
+if [[ "$(gh repo view "${repo}" --json isFork 2>/dev/null)" != *"true"* ]]; then
+    die "fatal: '${repo_name}' is not a fork"
 fi
 
 parent_repo=$(gh repo set-default --view 2>/dev/null)
