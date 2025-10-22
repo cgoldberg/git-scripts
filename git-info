@@ -60,9 +60,9 @@ num_tracked_files="$(\
         | wc -l \
 )"
 lines_tracked_files="$(\
-    git ls-files \
+    git grep -Il --no-color "" \
         | xargs -n 1 cat \
-        | grep -I -c ^ \
+        | grep -c ^ \
         | numfmt --grouping \
 )"
 file_counts_by_extension="$(\
