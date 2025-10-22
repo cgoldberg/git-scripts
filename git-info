@@ -65,7 +65,7 @@ lines_tracked_files="$(\
         | grep -I -c ^ \
         | numfmt --grouping \
 )"
-files_counts_by_extension="$(\
+file_counts_by_extension="$(\
     find . -type f ! -path './.git/*' -name '*.*' -print0 \
         | xargs -0 -n 1 basename \
         | grep -v '^[\.]' \
@@ -85,7 +85,7 @@ echo "files: ${num_files} (excluding .git directory)" | indent
 echo "tracked files: ${num_tracked_files}" | indent
 echo "lines in non-binary tracked files: ${lines_tracked_files}" | indent
 echo "files with extensions:" | indent
-echo "${files_counts_by_extension}"
+echo "${file_counts_by_extension}"
 echo
 
 echo -e "\033[1;36m== Most Recent Commit (branch: ${current_branch}) ==\033[0m"
