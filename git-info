@@ -34,16 +34,47 @@ while [[ ! -d .git ]] && [[ ! $(pwd) = "/" ]]; do
     cd ..
 done
 
-current_branch="$(git branch --show-current)"
-num_commits="$(git rev-list --count "${current_branch}" | LC_NUMERIC="en_US.UTF-8" numfmt --grouping)"
-size_disk="$(du -hs | awk '{print $1}')"
-size_tracked="$(git ls-files -z | xargs -0 stat -c %s | \
-    awk '{total+=$1} END {printf("%.0f\n",total)}' | numfmt --to=iec)"
-num_files="$(find . -type f ! -path './.git/*' | wc -l)"
-num_tracked_files="$(git ls-files | wc -l)"
-lines_tracked_files="$(git ls-files | xargs cat | grep -c ^ | numfmt --grouping)"
-files_counts_by_extension="$(find . -type f ! -path './.git/*' -name '*.*' -print0 \
-    | xargs -0 -n 1 basename | grep -v '^[\.]' | sed 's/.*\.//' | sort | uniq -c | sort -nr)"
+current_branch="$(\
+    git branch --show-current \
+)"
+num_commits="$(\
+    git rev-list --count "${current_branch}" \
+        | numfmt --grouping \
+)"
+size_disk="$(\
+    du -hs \
+        | awk '{print $1}' \
+)"
+size_tracked="$(\
+    git ls-files -z \
+        | xargs -0 stat -c %s \
+        | awk '{total+=$1} END {printf("%.0f\n",total)}' \
+        | numfmt --to=iec \
+)"
+num_files="$(\
+    find . -type f ! -path './.git/*' \
+        | wc -l \
+)"
+num_tracked_files="$(\
+    git ls-files \
+        | wc -l \
+)"
+lines_tracked_files="$(\
+    git ls-files \
+        | xargs cat \
+        | grep -c ^ \
+        | numfmt --grouping \
+)"
+files_counts_by_extension="$(\
+    find . -type f ! -path './.git/*' -name '*.*' -print0 \
+        | xargs -0 -n 1 basename \
+        | grep -v '^[\.]' \
+        | sed 's/.*\.//' \
+        | sort \
+        | uniq -c \
+        | sort -nr \
+        | numfmt --grouping \
+)"
 
 echo
 echo -e "\033[1;36m== Stats (branch: ${current_branch}) ==\033[0m"
