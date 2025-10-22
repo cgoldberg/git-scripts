@@ -60,7 +60,7 @@ num_tracked_files="$(\
         | wc -l \
 )"
 lines_tracked_files="$(\
-    git grep -Il --no-color "" \
+    git grep -Il --no-color --no-untracked "" \
         | xargs -n 1 cat \
         | grep -c ^ \
         | numfmt --grouping \
