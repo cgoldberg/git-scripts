@@ -48,7 +48,7 @@ size_disk="$(\
 size_tracked="$(\
     git ls-files \
         | xargs -n 1 stat -c %s \
-        | awk '{total+=$1} END {printf("%.0f\n",total)}' \
+        | awk '{total+=$1} END {printf("%.0f\n", total)}' \
         | numfmt --to=iec \
 )"
 num_files="$(\
