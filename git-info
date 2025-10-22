@@ -47,7 +47,7 @@ size_disk="$(\
 )"
 size_tracked="$(\
     git ls-files -z \
-        | xargs -0 stat -c %s \
+        | xargs -0 -n 1 stat -c %s \
         | awk '{total+=$1} END {printf("%.0f\n",total)}' \
         | numfmt --to=iec \
 )"
@@ -61,7 +61,7 @@ num_tracked_files="$(\
 )"
 lines_tracked_files="$(\
     git ls-files \
-        | xargs cat \
+        | xargs -n 1 cat \
         | grep -I -c ^ \
         | numfmt --grouping \
 )"
