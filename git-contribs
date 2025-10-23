@@ -61,4 +61,4 @@ git who -l -csv -n 0 \
     | numfmt --grouping
 echo
 echo "Top contributors:"
-NO_COLOR=true git who -n 10
+git who -n 10
