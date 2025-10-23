@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2025 Corey Goldberg (https://github.com/cgoldberg)
+#
+# git-contribs - show contributor stats
+#
+# instructions:
+#  - add this script to a directory on your PATH
+#  - make this script executable (chmod +x git-repostats)
+#  - run 'git contribs' from any directory in a local git repo
+#
+# requires:
+#  - git (https://git-scm.com)
+#  - git-who (https://github.com/sinclairtarget/git-who)
+
+set -e
+
+die () {
+    tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
+    tput bold; echo "$*" 1>&2; tput sgr0
+    exit 1
+}
+
+if [ ! -x "$(type -pP git)" ]; then
+    die "fatal: can't find git"
+fi
+
+if [ ! -x "$(type -pP git-who)" ]; then
+    die "fatal: can't find git-who"
+fi
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    die "fatal: not a git repository"
+fi
+
+# traverse up to root of repo
+while [[ ! -d .git ]] && [[ ! $(pwd) = "/" ]]; do
+    cd ..
+done
+
+echo
+echo "Repo stats"
+echo "----------"
+first_commit="$(git log --reverse --all --format='format:%at' | head -n 1)"
+now="$(date +%s)"
+age_secs="$((${now} - ${first_commit}))"
+age_days="$((age_secs / 86400))"
+echo "Age: $((age_days / 365)) years, $((age_days % 365 / 30)) months"
+echo -n "Commits: "
+git rev-list --count HEAD \
+    | numfmt --grouping
+echo -n "Lines modified: "
+git who -l -csv -n 0 \
+    | tail -n +2 \
+    | awk -F "," \
+    '{a+=$3}{r+=$4} END {printf "%\047d (+%\047d/-%\047d)\n", a + r, a, r}'
+echo -n "Contributors: "
+git who -l -csv -n 0 \
+    | tail -n +2 \
+    | wc -l \
+    | numfmt --grouping
+echo
+echo "Top contributors:"
+NO_COLOR=true git who -n 10

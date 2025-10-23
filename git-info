@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2025 Corey Goldberg (https://github.com/cgoldberg)
 #
-# git-info - show info about local repository
+# git-info - show info about repository
 #
 # instructions:
 #  - add this script to a directory on your PATH
@@ -78,13 +78,13 @@ file_counts_by_extension="$(\
 
 echo
 echo -e "\033[1;36m== Stats (branch: ${current_branch}) ==\033[0m"
-echo "commits: ${num_commits}" | indent
-echo "size on disk: ${size_on_disk}" | indent
-echo "size of tracked files: ${size_tracked_files}" | indent
-echo "files: ${num_files} (excluding .git directory)" | indent
-echo "tracked files: ${num_tracked_files}" | indent
-echo "lines in non-binary tracked files: ${lines_tracked_files}" | indent
-echo "files with extensions:" | indent
+echo "Commits: ${num_commits}" | indent
+echo "Size on disk: ${size_on_disk}" | indent
+echo "Size of tracked files: ${size_tracked_files}" | indent
+echo "Files: ${num_files} (excluding .git directory)" | indent
+echo "Tracked files: ${num_tracked_files}" | indent
+echo "Lines in non-binary tracked files: ${lines_tracked_files}" | indent
+echo "Files by extension:" | indent
 echo "${file_counts_by_extension}"
 echo
 echo -e "\033[1;36m== Remotes ==\033[0m"

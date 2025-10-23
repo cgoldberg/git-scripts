@@ -16,8 +16,10 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 
 - [**git-clean-untracked**](https://github.com/cgoldberg/git-scripts/blob/main/git-clean-untracked) (bash):
   - Delete untracked files and directories with confirmation
+- [**git-contribs**](https://github.com/cgoldberg/git-scripts/blob/main/git-contribs) (bash):
+  - Show contributor stats
 - [**git-info**](https://github.com/cgoldberg/git-scripts/blob/main/git-info) (bash):
-  - Show information about local repository
+  - Show information about repository
 - [**git-obliterate-repo**](https://github.com/cgoldberg/git-obliterate-repo/blob/main/git-info) (bash):
   - Delete untracked files, local/remote branches/tags, and all commit history
 - [**git-prs**](https://github.com/cgoldberg/git-scripts/blob/main/git-prs) (bash):
