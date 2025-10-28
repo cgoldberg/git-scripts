@@ -31,7 +31,7 @@
 #   in default web browser:
 #     - $ git prs -a
 
-set -e
+set -e o pipefail
 
 die () {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
@@ -96,17 +96,21 @@ if [ "${repo}" != "${parent_repo}" ]; then
 fi
 
 pr_url="https://api.github.com/repos/${repo}/pulls"
-params="state=open&sort=updated&direction=asc&per_page=100000"
+pages="5" # number of pages to search
 
-mapfile -t results < <(
-    curl -sSL \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    "${pr_url}?${params}" \
-    | jq -r --arg GITHUB_USERNAME "${GITHUB_USERNAME}" \
-    '.[] | {username: .user.login, title: .title, url: .html_url}
-    | select(.username == $GITHUB_USERNAME).title,
-    select(.username == $GITHUB_USERNAME).url' 2> /dev/null
- )
+declare -a results
+for page_num in $(seq 1 "${pages}"); do
+    mapfile -t page_results < <(
+        curl -sSL \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "${pr_url}?state=open&sort=updated&direction=asc&page=${page_num}&per_page=100" \
+            | jq -r --arg GITHUB_USERNAME "${GITHUB_USERNAME}" \
+            '.[] | {username: .user.login, title: .title, url: .html_url}
+            | select(.username == $GITHUB_USERNAME).title,
+            select(.username == $GITHUB_USERNAME).url' 2> /dev/null
+    )
+    results+=("${page_results[@]}")
+done
 
 if [ ${#results[@]} -eq 0 ]; then
     die "no PRs found"
