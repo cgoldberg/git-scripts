@@ -86,11 +86,11 @@ if [ -z "${parent_repo}" ]; then
 fi
 
 if [ "${repo}" == "${parent_repo}" ]; then
-    die "fatal: remote repo is not the parent (run 'gh repo set-default' and set the parent as default remote)"
+    die "fatal: parent repo is not the default remote (run 'gh repo set-default' and set the parent as default remote)"
 fi
 
 sync_parent_branch () {
-    echo "syncing '$1' branch on remote fork from its parent ..."
+    echo -e "syncing '$1' branch on remote fork from its parent ...\n"
     if gh repo sync "${repo}" --branch "$1" >/dev/null; then
         ok "synced '${GITHUB_USERNAME}:$1' branch from '${parent_repo%%/*}:${default_branch}'"
     fi
