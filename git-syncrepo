@@ -118,5 +118,3 @@ if [ -n "${OPT_ALL_BRANCHES}" ]; then
         echo
     done
 fi
-
-ok "done syncing"
