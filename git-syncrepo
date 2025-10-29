@@ -37,7 +37,7 @@ ok () {
 while getopts ":ah" opt; do
     case "${opt}" in
         a )
-            OPT_ALL_FILES="true"
+            OPT_ALL_BRANCHES="true"
             ;;
         h )
             echo -e "sync branches in remote fork with main branch in parent repo\n\n"\
@@ -69,7 +69,7 @@ if ! git remote --verbose | grep -q "github\.com"; then
 fi
 
 if [ ! -x "$(type -pP gh)" ]; then
-    die "fatal: can't find GitHub CLI (follow installation instructions at: https://github.com/cli/cli)"
+    die "fatal: can't find GitHub CLI"
 fi
 
 repo_name="$(basename $(basename $(git remote get-url origin)) '.git')"
@@ -96,15 +96,9 @@ sync_parent_branch () {
     fi
 }
 
-echo
-echo "fetching refs ..."
-echo
-git fetch --all --prune --verbose
-echo
-
 default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
 
-if [ -n "${OPT_ALL_FILES}" ]; then
+if [ -n "${OPT_ALL_BRANCHES}" ]; then
     for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
         branch="${remote_branch#remotes/origin/}"
         git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
@@ -118,9 +112,11 @@ branches_without_current=( ${branches[@]/${current_branch}} )
 
 sync_parent_branch "${current_branch}"
 echo
-if [ -n "${OPT_ALL_FILES}" ]; then
+if [ -n "${OPT_ALL_BRANCHES}" ]; then
     for branch in "${branches_without_current[@]}"; do
         sync_parent_branch "${branch}"
         echo
     done
 fi
+
+ok "done syncing"

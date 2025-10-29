@@ -83,11 +83,10 @@ if [ ! -x "$(type -pP python)" ]; then
 fi
 
 if [ ! -x "$(type -pP gh)" ]; then
-    die "fatal: can't find GitHub CLI (follow installation instructions at: https://github.com/cli/cli)"
+    die "fatal: can't find GitHub CLI"
 fi
 
 repo="${GITHUB_USERNAME}/$(basename $(basename $(git remote get-url origin)) '.git')"
-
 parent_repo=$(gh repo set-default --view 2>/dev/null)
 
 # if this is a fork, use the parent repo
