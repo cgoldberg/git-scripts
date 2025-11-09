@@ -9,7 +9,8 @@
 #  - Make this script executable (chmod +x git-stat)
 #  - Run 'git stat' from any directory in a local Git repo
 
-set -e
+set -eou pipefail
+
 
 die () {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
@@ -43,6 +44,7 @@ status_colors=(
      "color.status.untracked='red'"
      "color.status.unmerged='brightred bold'"
 )
+color_opts=""
 for sc in "${status_colors[@]}"; do
     color_opts="${color_opts} -c ${sc}"
 done

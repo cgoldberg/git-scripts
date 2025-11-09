@@ -15,7 +15,8 @@
 #  - $ git clean-untracked -i  # only ignored files
 #  - $ git clean-untracked -f  # no confirmation
 
-set -e
+set -eou pipefail
+
 
 die () {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0

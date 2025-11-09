@@ -31,7 +31,8 @@
 #   in default web browser:
 #     - $ git prs -a
 
-set -e o pipefail
+set -eou pipefail
+
 
 die () {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
