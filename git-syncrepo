@@ -90,7 +90,7 @@ if [ "${repo}" == "${parent_repo}" ]; then
 fi
 
 sync_parent_branch () {
-    echo -e "syncing '$1' branch on remote fork from its parent ...\n"
+    echo -e "syncing '$1' branch in remote fork with main branch in parent repo ...\n"
     if gh repo sync "${repo}" --branch "$1" >/dev/null; then
         ok "synced '${GITHUB_USERNAME}:$1' branch from '${parent_repo%%/*}:${default_branch}'"
     fi
