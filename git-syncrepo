@@ -23,8 +23,6 @@
 #  - $ git syncrepo  # default branch only
 #  - $ git syncrepo -a  # all branches
 
-set -o pipefail
-
 
 die () {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
