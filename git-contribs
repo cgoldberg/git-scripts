@@ -13,7 +13,7 @@
 #  - git (https://git-scm.com)
 #  - git-who (https://github.com/sinclairtarget/git-who)
 
-set -eou pipefail
+set -eo pipefail
 
 
 die () {

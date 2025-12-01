@@ -15,7 +15,7 @@
 #  - $ git clean-untracked -i  # only ignored files
 #  - $ git clean-untracked -f  # no confirmation
 
-set -eou pipefail
+set -eo pipefail
 
 
 die () {

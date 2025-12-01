@@ -31,7 +31,7 @@
 #   in default web browser:
 #     - $ git prs -a
 
-set -eou pipefail
+set -eo pipefail
 
 
 die () {

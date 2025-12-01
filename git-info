@@ -9,7 +9,7 @@
 #  - make this script executable (chmod +x git-info)
 #  - run 'git info' from any directory in a local git repo
 
-set -eou pipefail
+set -eo pipefail
 
 
 die () {
