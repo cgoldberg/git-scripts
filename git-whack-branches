@@ -23,8 +23,14 @@ ok () {
     tput bold; echo "$*" 1>&2; tput sgr0
 }
 
+warning_msg="WARNING: this will delete all local branches! (except default branch and current branch)"
+default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
+
+show_branches () {
+    git branch --no-color | grep -Ev "(^\*|${default_branch})"
+}
+
 delete_branches () {
-    local default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
     git branch --no-color | grep -Ev "(^\*|${default_branch})" \
         | xargs --no-run-if-empty git branch -D
 }
@@ -38,8 +44,14 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 fi
 
 echo
-warning_msg="WARNING: this will delete all local branches! (except default branch and current branch)"
+if [ "$(show_branches | wc -l)" -eq 0 ]; then
+    die "no branches to delete!"
+fi
 tput bold; tput setaf 1; echo "${warning_msg}"; tput sgr0
+echo
+echo "the following branches will be deleted:"
+echo
+show_branches
 echo
 echo "proceed?"
 echo
