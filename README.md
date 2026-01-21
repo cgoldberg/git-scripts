@@ -6,7 +6,7 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 
 ---
 
-- Copyright (c) 2025 [Corey Goldberg][github-profile]
+- Copyright (c) 2025-2026 [Corey Goldberg][github-profile]
 - Development: [GitHub][github-repo]
 - License: [MIT][mit-license]
 
