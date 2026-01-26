@@ -1,6 +1,6 @@
 # git-scripts
 
-#### A collection of scripts for working with [Git][git-home] and [GitHub][github-home]
+#### Collection of scripts for working with [Git][git-home] and [GitHub][github-home]
 
 All script are written in [Bash][bash-home] or [Python][python-home].
 
@@ -14,6 +14,8 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 
 #### Contents:
 
+- [**git-branches**](https://github.com/cgoldberg/git-scripts/blob/main/git-branches) (bash):
+  - Show local branch info
 - [**git-clean-untracked**](https://github.com/cgoldberg/git-scripts/blob/main/git-clean-untracked) (bash):
   - Delete untracked files and directories with confirmation
 - [**git-contribs**](https://github.com/cgoldberg/git-scripts/blob/main/git-contribs) (bash):

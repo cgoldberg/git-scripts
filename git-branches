@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2026 Corey Goldberg (https://github.com/cgoldberg)
+#
+# git-branches - show local branch info
+#
+# - creates a local tracking branch for every remote branch
+# - shows each local branch and how far ahead/behind they are from default branch on remote/origin
+# - sorted by last commit date
+#
+# instructions:
+#  - add this script to a directory on your PATH
+#  - make this script executable (chmod +x git-branches)
+#  - run 'git branches' from any directory in a local git repo
+
+set -e
+
+
+BRIGHT_YELLOW="\033[38;5;226m"
+BOLD_WHITE="\033[1;37m"
+RESET="\033[0m"
+
+git track-branches >/dev/null 2>&1
+
+default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
+remote_branch="origin/${default_branch}"
+echo
+echo -e "${BOLD_WHITE}Local Branches:${RESET}"
+for branch in $(git branch --format='%(refname:short)' --sort='-authordate'); do
+    if [ "${branch}" != "refs/heads" ]; then
+        ahead=$(git rev-list --count "${remote_branch}".."${branch}")
+        behind=$(git rev-list --count "${branch}".."${remote_branch}")
+        author_date=$(git branch --list ${branch} --format='%(authordate:local)')
+        echo -ne " - ${BRIGHT_YELLOW}${branch}${RESET} "
+        echo -ne "- ${BOLD_WHITE}ahead ${ahead}${RESET}, ${BOLD_WHITE}behind ${behind}${RESET} "
+        echo -ne "(${author_date})"
+        echo
+    fi
+done
+echo
