@@ -13,8 +13,6 @@
 #  - make this script executable (chmod +x git-branches)
 #  - run 'git branches' from any directory in a local git repo
 
-set -e
-
 
 BRIGHT_YELLOW="\033[38;5;226m"
 BOLD_WHITE="\033[1;37m"
@@ -32,9 +30,9 @@ for branch in $(git branch --format='%(refname:short)' --sort='-authordate'); do
         behind=$(git rev-list --count "${branch}".."${remote_branch}")
         author_date=$(git branch --list ${branch} --format='%(authordate:local)')
         echo -ne " - ${BRIGHT_YELLOW}${branch}${RESET} "
-        echo -ne "- ${BOLD_WHITE}ahead ${ahead}${RESET}, ${BOLD_WHITE}behind ${behind}${RESET} "
-        echo -ne "(${author_date})"
-        echo
+        echo -ne "- ${BOLD_WHITE}ahead ${ahead}${RESET}, "
+        echo -ne "${BOLD_WHITE}behind ${behind}${RESET} "
+        echo -e "(${author_date})"
     fi
 done
 echo
