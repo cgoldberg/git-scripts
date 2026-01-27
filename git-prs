@@ -59,12 +59,24 @@ while getopts ":ah" opt; do
     esac
 done
 
-if [ -z "${GITHUB_USERNAME}" ]; then
-    die "fatal: 'GITHUB_USERNAME' environment variable not set"
+if ! type git >/dev/null 2>&1; then
+    die "fatal: can't find git"
 fi
 
-if [ ! -x "$(type -pP git)" ]; then
-    die "fatal: can't find git"
+if ! type jq >/dev/null 2>&1; then
+    die "fatal: can't find jq"
+fi
+
+if ! type python >/dev/null 2>&1; then
+    die "fatal: can't find python"
+fi
+
+if ! type gh >/dev/null 2>&1; then
+    die "fatal: can't find GitHub CLI"
+fi
+
+if [ -z "${GITHUB_USERNAME}" ]; then
+    die "fatal: 'GITHUB_USERNAME' environment variable not set"
 fi
 
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -73,18 +85,6 @@ fi
 
 if ! git remote --verbose | grep -q "github\.com"; then
     die "fatal: must have an origin on github.com"
-fi
-
-if [ ! -x "$(type -pP jq)" ]; then
-    die "fatal: can't find jq"
-fi
-
-if [ ! -x "$(type -pP python)" ]; then
-    die "fatal: can't find python"
-fi
-
-if [ ! -x "$(type -pP gh)" ]; then
-    die "fatal: can't find GitHub CLI"
 fi
 
 repo="${GITHUB_USERNAME}/$(basename $(basename $(git remote get-url origin)) '.git')"

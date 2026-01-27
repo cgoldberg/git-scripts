@@ -9,6 +9,9 @@
 #  - make this script executable (chmod +x git-clean-untracked)
 #  - run 'git clean-untracked' from any directory in a local git repo
 #
+# requires:
+#  - git (https://git-scm.com)
+#
 # usage/examples:
 #  - $ git clean-untracked  # excludes ignored files
 #  - $ git clean-untracked -a  # includes ignored files
@@ -55,7 +58,7 @@ while getopts ":afih" opt; do
     esac
 done
 
-if [ ! -x "$(type -pP git)" ]; then
+if ! type git >/dev/null 2>&1; then
     die "fatal: can't find git"
 fi
 

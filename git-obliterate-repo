@@ -12,6 +12,9 @@
 # - truncates all commit history
 # - force pushes default branch to remote
 #
+# requires:
+#  - git (https://git-scm.com)
+#
 # instructions:
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-obliterate-repo)
@@ -51,7 +54,7 @@ obliterate () {
     git branch --set-upstream-to=origin/"${default_branch}" "${default_branch}"
 }
 
-if [ ! -x "$(type -pP git)" ]; then
+if ! type git >/dev/null 2>&1; then
     die "fatal: can't find git"
 fi
 

@@ -12,6 +12,9 @@
 # - switches back to original branch
 # - reapplies stashed changes
 #
+# requires:
+#  - git (https://git-scm.com)
+#
 # instructions:
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-sync)
@@ -29,7 +32,7 @@ ok () {
     tput bold; echo "$*" 1>&2; tput sgr0
 }
 
-if [ ! -x "$(type -pP git)" ]; then
+if ! type git >/dev/null 2>&1; then
     die "fatal: can't find git"
 fi
 

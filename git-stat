@@ -4,10 +4,13 @@
 #
 # git-stat - Colorize status to indicate branch state
 #
-# Instructions:
-#  - Add this script to a directory on your PATH
-#  - Make this script executable (chmod +x git-stat)
-#  - Run 'git stat' from any directory in a local Git repo
+# requires:
+#  - git (https://git-scm.com)
+#
+# instructions:
+#  - add this script to a directory on your PATH
+#  - make this script executable (chmod +x git-stat)
+#  - run 'git stat' from any directory in a local Git repo
 
 set -eo pipefail
 
@@ -18,7 +21,7 @@ die () {
     exit 1
 }
 
-if [ ! -x "$(type -pP git)" ]; then
+if ! type git >/dev/null 2>&1; then
     die "fatal: can't find git"
 fi
 

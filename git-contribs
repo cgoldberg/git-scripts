@@ -22,11 +22,11 @@ die () {
     exit 1
 }
 
-if [ ! -x "$(type -pP git)" ]; then
+if ! type git >/dev/null 2>&1; then
     die "fatal: can't find git"
 fi
 
-if [ ! -x "$(type -pP git-who)" ]; then
+if ! type git-who >/dev/null 2>&1; then
     die "fatal: can't find git-who"
 fi
 

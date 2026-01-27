@@ -4,6 +4,9 @@
 #
 # git-whack-branches - delete all local branches except default and current branch, even if not merged
 #
+# requires:
+#  - git (https://git-scm.com)
+#
 # instructions:
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-whack-branches)
@@ -35,7 +38,7 @@ delete_branches () {
         | xargs --no-run-if-empty git branch -D
 }
 
-if [ ! -x "$(type -pP git)" ]; then
+if ! type git >/dev/null 2>&1; then
     die "fatal: can't find git"
 fi
 

@@ -8,6 +8,10 @@
 # - shows each local branch and how far ahead/behind they are from default branch on remote/origin
 # - sorted by last modified
 #
+# requires:
+#  - git (https://git-scm.com)
+#  - git-track-branches script
+#
 # instructions:
 #  - add this script to a directory on your PATH
 #  - make this script executable (chmod +x git-branches)
@@ -20,12 +24,16 @@ die () {
     exit 1
 }
 
-if [ ! -x "$(type -pP git)" ]; then
+if ! type git >/dev/null 2>&1; then
     die "fatal: can't find git"
 fi
 
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "fatal: not a git repository"
+fi
+
+if ! type git-track-branchess >/dev/null 2>&1; then
+    die "fatal: can't find git-track-branches script"
 fi
 
 BRIGHT_YELLOW="\033[38;5;226m"
