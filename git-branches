@@ -32,7 +32,7 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "fatal: not a git repository"
 fi
 
-if ! type git-track-branchess >/dev/null 2>&1; then
+if ! type git-track-branches >/dev/null 2>&1; then
     die "fatal: can't find git-track-branches script"
 fi
 
