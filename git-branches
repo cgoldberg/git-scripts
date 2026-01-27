@@ -14,6 +14,20 @@
 #  - run 'git branches' from any directory in a local git repo
 
 
+die () {
+    tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
+    tput bold; echo "$*" 1>&2; tput sgr0
+    exit 1
+}
+
+if [ ! -x "$(type -pP git)" ]; then
+    die "fatal: can't find git"
+fi
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    die "fatal: not a git repository"
+fi
+
 BRIGHT_YELLOW="\033[38;5;226m"
 BOLD_WHITE="\033[1;37m"
 RESET="\033[0m"
@@ -24,11 +38,11 @@ default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
 remote_branch="origin/${default_branch}"
 echo
 echo -e "${BOLD_WHITE}Local Branches:${RESET}"
-for branch in $(git branch --format='%(refname:short)' --sort='-authordate'); do
+for branch in $(git branch --format="%(refname:short)" --sort="-authordate"); do
     if [ "${branch}" != "refs/heads" ]; then
         ahead=$(git rev-list --count "${remote_branch}".."${branch}")
         behind=$(git rev-list --count "${branch}".."${remote_branch}")
-        author_date=$(git branch --list ${branch} --format='%(authordate:local)')
+        author_date=$(git branch --list "${branch}" --format="%(authordate:local)")
         echo -ne " - ${BRIGHT_YELLOW}${branch}${RESET} "
         echo -ne "- ${BOLD_WHITE}ahead ${ahead}${RESET}, "
         echo -ne "${BOLD_WHITE}behind ${behind}${RESET} "
