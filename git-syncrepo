@@ -107,7 +107,6 @@ if [ -n "${OPT_ALL_BRANCHES}" ]; then
         branch="${remote_branch#remotes/origin/}"
         git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
     done
-    echo
 fi
 
 current_branch=$(git branch --show-current)

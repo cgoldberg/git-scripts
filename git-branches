@@ -10,7 +10,6 @@
 #
 # requires:
 #  - git (https://git-scm.com)
-#  - git-track-branches script
 #
 # instructions:
 #  - add this script to a directory on your PATH
@@ -40,10 +39,15 @@ BRIGHT_YELLOW="\033[38;5;226m"
 BOLD_WHITE="\033[1;37m"
 RESET="\033[0m"
 
-git track-branches >/dev/null 2>&1
-
 default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
+
+for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${default_branch}"); do
+    branch="${remote_branch#remotes/origin/}"
+    git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
+done
+
 remote_branch="origin/${default_branch}"
+
 echo
 echo -e "${BOLD_WHITE}Local Branches:${RESET}"
 for branch in $(git branch --format="%(refname:short)" --sort="-authordate"); do
