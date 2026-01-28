@@ -49,7 +49,7 @@ done
 remote_branch="origin/${default_branch}"
 
 echo
-echo -e "${BOLD_WHITE}Local Branches:${RESET}"
+echo -e "${BOLD_WHITE}local branches:${RESET}"
 for branch in $(git branch --format="%(refname:short)" --sort="-authordate"); do
     if [ "${branch}" != "refs/heads" ]; then
         ahead=$(git rev-list --count "${remote_branch}".."${branch}")
