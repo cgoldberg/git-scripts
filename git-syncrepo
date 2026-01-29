@@ -4,7 +4,6 @@
 #
 # git-syncrepo - sync branches in remote fork with default branch in parent repo
 #
-# - fetches from remote and prunes stale refs
 # - creates a local tracking branch for every remote branch (if -a option is used)
 # - syncs current branch in remote fork with default branch in parent repo (all branches if -a option is used)
 # - only works if inside a local git repo that was cloned from a fork on GitHub

@@ -51,7 +51,6 @@ echo
 echo "fetching refs ..."
 echo
 git fetch --all --prune --verbose
-echo
 
 default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
 
