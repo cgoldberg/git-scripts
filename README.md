@@ -33,7 +33,7 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 - [**git-sync**](https://github.com/cgoldberg/git-scripts/blob/main/git-sync) (bash):
   - Rebase all local branches in current repository from remote tracking branches
 - [**git-syncrepo**](https://github.com/cgoldberg/git-scripts/blob/main/git-syncrepo) (bash):
-  - Sync branch in remote fork with main branch in parent repo
+  - Sync branch in remote fork with default branch in parent repo
 - [**git-track-branches**](https://github.com/cgoldberg/git-scripts/blob/main/git-track-branches) (bash):
   - Create a local tracking branch for every remote branch
 - [**git-whack-branches**](https://github.com/cgoldberg/git-scripts/blob/main/git-whack-branches) (bash):

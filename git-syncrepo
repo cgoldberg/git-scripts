@@ -2,11 +2,11 @@
 #
 # Copyright (c) 2025-2026 Corey Goldberg (https://github.com/cgoldberg)
 #
-# git-syncrepo - sync branches in remote fork with main branch in parent repo
+# git-syncrepo - sync branches in remote fork with default branch in parent repo
 #
 # - fetches from remote and prunes stale refs
 # - creates a local tracking branch for every remote branch (if -a option is used)
-# - syncs current branch in remote fork with main branch in parent repo (all branches if -a option is used)
+# - syncs current branch in remote fork with default branch in parent repo (all branches if -a option is used)
 # - only works if inside a local git repo that was cloned from a fork on GitHub
 # - requires GitHub CLI (https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
 # - must have parent repo set as default remote (run 'gh repo set-default')
@@ -44,7 +44,7 @@ while getopts ":ah" opt; do
             OPT_ALL_BRANCHES="true"
             ;;
         h )
-            echo -e "sync branches in remote fork with main branch in parent repo\n\n"\
+            echo -e "sync branches in remote fork with default branch in parent repo\n\n"\
                 "options:\n"\
                 " -a : sync all branches\n"\
                 " -h : show this help message"
@@ -94,7 +94,7 @@ if [ "${repo}" == "${parent_repo}" ]; then
 fi
 
 sync_parent_branch () {
-    echo -e "syncing '$1' branch in remote fork with main branch in parent repo ...\n"
+    echo -e "syncing '$1' branch in remote fork with default branch in parent repo ...\n"
     if gh repo sync "${repo}" --branch "$1" >/dev/null; then
         ok "synced '${GITHUB_USERNAME}:$1' branch from '${parent_repo%%/*}:${default_branch}'"
     fi
