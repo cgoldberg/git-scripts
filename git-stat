@@ -12,7 +12,7 @@
 #  - make this script executable (chmod +x git-stat)
 #  - run 'git stat' from any directory in a local Git repo
 
-set -eo pipefail
+set -o pipefail
 
 
 die () {

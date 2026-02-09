@@ -12,7 +12,7 @@
 #  - make this script executable (chmod +x git-whack-branches)
 #  - run 'git whack-branches' from any directory in a local git repo
 
-set -eo pipefail
+set -o pipefail
 
 
 die () {
