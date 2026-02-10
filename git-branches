@@ -37,7 +37,7 @@ if ! type git-track-branches >/dev/null 2>&1; then
     die "fatal: can't find git-track-branches script"
 fi
 
-BRIGHT_YELLOW="\033[38;5;226m"
+BOLD_BRIGHT_YELLOW="\033[1;38;5;226m"
 BOLD_WHITE="\033[1;37m"
 RESET="\033[0m"
 
@@ -48,16 +48,16 @@ for remote_branch in $(git branch --all --no-color | grep remotes | grep -v "${d
     git branch --track "${branch}" "${remote_branch}" 2>&1 | grep -v "already exists"
 done
 
-remote_branch="origin/${default_branch}"
+default_remote_branch="origin/${default_branch}"
 
 echo
 echo -e "${BOLD_WHITE}local branches:${RESET}"
 for branch in $(git branch --format="%(refname:short)" --sort="-authordate"); do
     if [ "${branch}" != "refs/heads" ]; then
-        ahead=$(git rev-list --count "${remote_branch}".."${branch}")
-        behind=$(git rev-list --count "${branch}".."${remote_branch}")
+        ahead=$(git rev-list --count "${default_remote_branch}".."${branch}")
+        behind=$(git rev-list --count "${branch}".."${default_remote_branch}")
         author_date=$(git branch --list "${branch}" --format="%(authordate:local)")
-        echo -ne " - ${BRIGHT_YELLOW}${branch}${RESET} "
+        echo -ne " - ${BOLD_BRIGHT_YELLOW}${branch}${RESET} "
         echo -ne "- ${BOLD_WHITE}ahead ${ahead}${RESET}, "
         echo -ne "${BOLD_WHITE}behind ${behind}${RESET} "
         echo -e "(${author_date})"
