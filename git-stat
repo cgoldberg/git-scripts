@@ -12,8 +12,6 @@
 #  - make this script executable (chmod +x git-stat)
 #  - run 'git stat' from any directory in a local Git repo
 
-set -o pipefail
-
 
 die () {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
@@ -39,7 +37,7 @@ unmerged="1;31"     # bold red
 
 status_colors=(
      "color.status='always'"
-     "color.status.branch='brightmagenta bold'"
+     "color.status.branch='201 bold'"
      "color.status.nobranch='red bold'"
      "color.status.added='green'"
      "color.status.updated='green'"
