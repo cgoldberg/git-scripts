@@ -13,8 +13,6 @@
 #  - git (https://git-scm.com)
 #  - git-who (https://github.com/sinclairtarget/git-who)
 
-set -o pipefail
-
 
 die () {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
