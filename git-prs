@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Copyright (c) 2025-2026 Corey Goldberg (https://github.com/cgoldberg)
+# License: MIT
 #
 # git-prs - open GitHub Pull Request URLs in a web browser
 #

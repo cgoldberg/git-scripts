@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Copyright (c) 2025-2026 Corey Goldberg (https://github.com/cgoldberg)
+# License: MIT
 #
 # git-obliterate-repo - delete untracked files, local/remote branches/tags, and all commit history
 #

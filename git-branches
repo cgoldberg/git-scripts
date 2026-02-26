@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Copyright (c) 2026 Corey Goldberg (https://github.com/cgoldberg)
+# License: MIT
 #
 # git-branches - show local branch info
 #

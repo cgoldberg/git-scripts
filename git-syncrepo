@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Copyright (c) 2025-2026 Corey Goldberg (https://github.com/cgoldberg)
+# License: MIT
 #
 # git-syncrepo - sync branches in remote fork with default branch in parent repo
 #
