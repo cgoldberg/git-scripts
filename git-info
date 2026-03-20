@@ -20,8 +20,17 @@ die () {
     exit 1
 }
 
+print_header () {
+    echo
+    echo -e "  \033[1;95m== $1 ==\033[0m"
+}
+
 indent () {
-    cat - | sed -e 's/^[[:space:]]*/   /g'
+    sed 's/^/    /'
+}
+
+print_stat () {
+    echo -e "  \033[1m$1:\033[0m $2"
 }
 
 if ! type git >/dev/null 2>&1; then
@@ -37,65 +46,63 @@ while [[ ! -d .git ]] && [[ ! $(pwd) = "/" ]]; do
     cd ..
 done
 
-current_branch="$(\
-    git branch --show-current \
-)"
-num_commits="$(\
-    git rev-list --count "${current_branch}" \
-        | numfmt --grouping \
-)"
-size_on_disk="$(\
-    du -hs \
-        | awk '{print $1}' \
-)"
+local_name="$(basename "$(git rev-parse --show-toplevel 2>/dev/null)")"
+remote_url="$(git remote get-url origin 2>/dev/null || true)"
+current_branch="$(git branch --show-current)"
+num_commits="$(git rev-list --count "${current_branch}" | numfmt --grouping)"
+first_commit="$(git log --reverse --all --format='format:%at' | head -n 1)"
+size_on_disk="$(du -hs | awk '{print $1}')"
+num_files="$(find . -type f ! -path './.git/*' | wc -l | numfmt --grouping)"
+num_tracked_files="$(git ls-files | wc -l | numfmt --grouping)"
 size_tracked_files="$(\
-    git ls-files \
-        | xargs -n 1 stat -c %s \
+    git ls-files -z \
+        | xargs -0 -n 1 stat -c %s \
         | awk '{total+=$1} END {printf("%.0f\n", total)}' \
         | numfmt --to=iec \
 )"
-num_files="$(\
-    find . -type f ! -path './.git/*' \
-        | wc -l \
-)"
-num_tracked_files="$(\
-    git ls-files \
-        | wc -l \
-)"
 lines_tracked_files="$(\
-    git grep -Il --no-color --no-untracked "" \
-        | xargs -n 1 cat \
+    git grep -Ilz --no-color --no-untracked "" \
+        | xargs -0 -n 1 cat \
         | grep -c ^ \
         | numfmt --grouping \
 )"
-file_counts_by_extension="$(\
-    find . -type f ! -path './.git/*' -name '*.*' -print0 \
+file_counts_by_extension="$( \
+    find . -type f ! -path './.git/*' -print0 \
         | xargs -0 -n 1 basename \
-        | grep -v '^[\.]' \
+        | grep '\.' \
         | sed 's/.*\.//' \
         | sort \
         | uniq -c \
         | sort -nr \
         | numfmt --grouping \
+        | awk '{printf "    %8s  %s\n", $1, $2}' \
 )"
+now="$(date +%s)"
+age_secs="$((now - first_commit))"
+age_days="$((age_secs / 86400))"
 
-echo
-echo -e "\033[1;36m== Stats (branch: ${current_branch}) ==\033[0m"
-echo "Commits: ${num_commits}" | indent
-echo "Size on disk: ${size_on_disk}" | indent
-echo "Size of tracked files: ${size_tracked_files}" | indent
-echo "Files: ${num_files} (excluding .git directory)" | indent
-echo "Tracked files: ${num_tracked_files}" | indent
-echo "Lines in non-binary tracked files: ${lines_tracked_files}" | indent
-echo "Files by extension:" | indent
+print_header "Repo Info"
+print_stat "Name" "$local_name"
+print_stat "Age" "$((age_days / 365)) years, $((age_days % 365 / 30)) months"
+print_stat "Size on disk" "$size_on_disk"
+
+print_header "Current Branch Stats (${current_branch})"
+print_stat "Commits" "$num_commits"
+print_stat "Size of tracked files" "$size_tracked_files"
+print_stat "Files" "$num_files (excluding .git directory)"
+print_stat "Tracked files" "$num_tracked_files"
+print_stat "Lines in non-binary tracked files" "$lines_tracked_files"
+
+print_stat "Files by extension:"
 echo "${file_counts_by_extension}"
-echo
-echo -e "\033[1;36m== Remotes ==\033[0m"
-git remote -v | indent
-echo
-echo -e "\033[1;36m== Remote Branches ==\033[0m"
-git branch -r --color=never | indent
-echo
-echo -e "\033[1;36m== Local Branches ==\033[0m"
-git branch --color=never | indent
+
+print_header "Remotes"
+git remote -v | sed 's/^/  /'
+
+print_header "Remote Branches"
+git branch -r --color=never | sed 's/^[[:space:]]*/  /'
+
+print_header "Local Branches"
+git branch --color=never | sort | sed 's/^/  /'
+
 echo
