@@ -69,6 +69,7 @@ lines_tracked_files="$(\
 file_counts_by_extension="$( \
     find . -type f ! -path './.git/*' -print0 \
         | xargs -0 -n 1 basename \
+        | grep -v '^\.' \
         | grep '\.' \
         | sed 's/.*\.//' \
         | sort \
