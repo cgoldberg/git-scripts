@@ -33,6 +33,9 @@
 #     - $ git prs -a
 
 
+NUM_PAGES=10 # number of pages to search in history
+
+
 die () {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
@@ -99,10 +102,9 @@ if [ "${repo}" != "${parent_repo}" ]; then
 fi
 
 pr_url="https://api.github.com/repos/${repo}/pulls"
-pages="5" # number of pages to search
 
 declare -a results
-for page_num in $(seq 1 "${pages}"); do
+for page_num in $(seq 1 "${NUM_PAGES}"); do
     mapfile -t page_results < <(
         curl -sSL \
             -H "X-GitHub-Api-Version: 2022-11-28" \
