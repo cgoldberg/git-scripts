@@ -44,7 +44,7 @@ fi
 sync_branch () {
     echo "switching to branch '$1'"
     git checkout --quiet "$1"
-    echo "rebasing '$1'"
+    echo "updating '$1'"
     git pull --rebase --stat
 }
 
