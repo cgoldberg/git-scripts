@@ -15,7 +15,7 @@
 #  - git-who (https://github.com/sinclairtarget/git-who)
 
 
-die () {
+die() {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
     exit 1

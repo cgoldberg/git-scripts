@@ -27,13 +27,13 @@
 #  - $ git syncrepo -a  # all branches
 
 
-die () {
+die() {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
     exit 1
 }
 
-ok () {
+ok() {
     tput bold; tput setaf 10; echo -en "\u2714  " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
 }
@@ -97,7 +97,7 @@ if [ "${repo}" == "${parent_repo}" ]; then
     die "fatal: parent repo is not the default remote (run 'gh repo set-default' and set the parent as default remote)"
 fi
 
-sync_parent_branch () {
+sync_parent_branch() {
     echo -e "syncing '$1' branch in remote fork with default branch in parent repo ...\n"
     if gh repo sync "${repo}" --branch "$1" >/dev/null; then
         ok "synced '${GITHUB_USERNAME}:$1' branch from '${parent_repo%%/*}:${default_branch}'"

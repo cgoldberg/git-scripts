@@ -22,18 +22,18 @@
 #  - run 'git obliterate-repo' from any directory in a local git repo
 
 
-die () {
+die() {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
     exit 1
 }
 
-ok () {
+ok() {
     tput bold; tput setaf 10; echo -en "\u2714  " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
 }
 
-obliterate () {
+obliterate() {
     local default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
     local temp_branch="{RANDOM}-temp-branch"
     git checkout --force --quiet "${default_branch}"

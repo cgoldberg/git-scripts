@@ -22,13 +22,13 @@
 #  - run 'git sync' from any directory in a local git repo
 
 
-die () {
+die() {
     tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
     exit 1
 }
 
-ok () {
+ok() {
     tput bold; tput setaf 10; echo -en "\u2714  " 1>&2; tput sgr0
     tput bold; echo "$*" 1>&2; tput sgr0
 }
@@ -41,7 +41,7 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "fatal: not a git repository"
 fi
 
-sync_branch () {
+sync_branch() {
     echo "switching to branch '$1'"
     git checkout --quiet "$1"
     echo "updating '$1'"
