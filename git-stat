@@ -14,9 +14,13 @@
 #  - run 'git stat' from any directory in a local Git repo
 
 
+BOLD="\e[1m"
+RED="\e[31m"
+RESET="\e[0m"
+CROSS="\u2717"
+
 die() {
-    tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
-    tput bold; echo "$*" 1>&2; tput sgr0
+    printf "${BOLD}${RED}%b${RESET} ${BOLD}%s${RESET}\n" "${CROSS}" "$*" 1>&2
     exit 1
 }
 

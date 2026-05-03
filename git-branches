@@ -18,9 +18,15 @@
 #  - run 'git branches' from any directory in a local git repo
 
 
+BOLD_BRIGHT_YELLOW="\e[1;38;5;226m"
+BOLD_WHITE="\e[1;37m"
+BOLD="\e[1m"
+RED="\e[31m"
+RESET="\e[0m"
+CROSS="\u2717"
+
 die() {
-    tput bold; tput setaf 1; echo -en "\u2717 " 1>&2; tput sgr0
-    tput bold; echo "$*" 1>&2; tput sgr0
+    printf "${BOLD}${RED}%b${RESET} ${BOLD}%s${RESET}\n" "${CROSS}" "$*" 1>&2
     exit 1
 }
 
@@ -35,10 +41,6 @@ fi
 if ! type git-track-branches >/dev/null 2>&1; then
     die "fatal: can't find git-track-branches script"
 fi
-
-BOLD_BRIGHT_YELLOW="\033[1;38;5;226m"
-BOLD_WHITE="\033[1;37m"
-RESET="\033[0m"
 
 default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's/.*\///')
 
