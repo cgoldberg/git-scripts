@@ -17,7 +17,7 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 - [**git-branches**](https://github.com/cgoldberg/git-scripts/blob/main/git-branches) (bash):
   - Show local branch info
 - [**git-clean-untracked**](https://github.com/cgoldberg/git-scripts/blob/main/git-clean-untracked) (bash):
-  - Delete untracked files and directories with confirmation
+  - Delete untracked files and directories
 - [**git-contribs**](https://github.com/cgoldberg/git-scripts/blob/main/git-contribs) (bash):
   - Show contributor stats
 - [**git-info**](https://github.com/cgoldberg/git-scripts/blob/main/git-info) (bash):
@@ -37,7 +37,7 @@ All script are written in [Bash][bash-home] or [Python][python-home].
 - [**git-track-branches**](https://github.com/cgoldberg/git-scripts/blob/main/git-track-branches) (bash):
   - Create a local tracking branch for every remote branch
 - [**git-whack-branches**](https://github.com/cgoldberg/git-scripts/blob/main/git-whack-branches) (bash):
-  - Delete all local branches except default and current branch, even if not merged
+  - Delete all local branches except default and current branch
 
 ----
 
