@@ -71,18 +71,6 @@ lines_tracked_files="$(\
         | grep -c ^ \
         | numfmt --grouping \
 )"
-file_counts_by_extension="$( \
-    find . -type f ! -path './.git/*' -print0 \
-        | xargs -0 -n 1 basename \
-        | grep -v '^\.' \
-        | grep '\.' \
-        | sed 's/.*\.//' \
-        | sort \
-        | uniq -c \
-        | sort -nr \
-        | numfmt --grouping \
-        | awk '{printf "    %8s  %s\n", $1, $2}' \
-)"
 now="$(date +%s)"
 age_secs="$((now - first_commit))"
 age_days="$((age_secs / 86400))"
@@ -93,14 +81,11 @@ print_stat "Age" "$((age_days / 365)) years, $((age_days % 365 / 30)) months"
 print_stat "Size on disk" "$size_on_disk"
 
 print_header "Current Branch Stats (${current_branch})"
-print_stat "Commits" "$num_commits"
-print_stat "Size of tracked files" "$size_tracked_files"
-print_stat "Files" "$num_files (excluding .git directory)"
-print_stat "Tracked files" "$num_tracked_files"
-print_stat "Lines in non-binary tracked files" "$lines_tracked_files"
-
-print_stat "Files by extension:"
-echo "${file_counts_by_extension}"
+print_stat "Commits" "${num_commits}"
+print_stat "Size of tracked files" "${size_tracked_files}"
+print_stat "Files" "${num_files} (excluding .git directory)"
+print_stat "Tracked files" "${num_tracked_files}"
+print_stat "Lines in non-binary tracked files" "${lines_tracked_files}"
 
 print_header "Remotes"
 git remote -v | sed 's/^/  /'
