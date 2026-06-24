@@ -95,7 +95,7 @@ echo -e "${RED}${files_to_remove}${RESET}"
 
 if [ -n "${OPT_NO_CONFIRM}" ]; then
     echo
-    "${cmd}"
+    ${cmd}
     echo
     ok "done cleaning files"
 else
