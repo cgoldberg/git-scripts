@@ -54,7 +54,7 @@ sync_branch() {
 }
 
 echo
-echo "fetching refs ..."
+echo "fetching refs..."
 echo
 git fetch --all --prune --verbose
 

@@ -134,7 +134,7 @@ done
 echo
 if [ -n "${OPT_ALL_PRS}" ]; then
     for url in "${urls[@]}"; do
-        echo "opening PR URL in web browser ..."
+        echo "opening PR URL in web browser..."
         echo "${url}"
         python -m webbrowser -t "${url}"
     done
@@ -146,7 +146,7 @@ else
     read -p "select a PR: " num
     url="${urls[(($num - 1))]}"
     echo
-    echo "opening PR URL in web browser ..."
+    echo "opening PR URL in web browser..."
     echo "${url}"
     python -m webbrowser -t "${url}"
 fi
