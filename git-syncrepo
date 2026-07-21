@@ -143,4 +143,4 @@ fi
 echo "fetching tags from upstream..."
 git fetch --prune-tags --force "${upstream_url}" 'refs/tags/*:refs/tags/*'
 echo
-ok "tags synced"
+ok "synced tags"
