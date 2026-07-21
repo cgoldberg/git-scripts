@@ -3,10 +3,11 @@
 # Copyright (c) 2025-2026 Corey Goldberg (https://github.com/cgoldberg)
 # License: MIT
 #
-# git-syncrepo - sync branches in remote fork with default branch in parent repo
+# git-syncrepo - sync branches and tags in remote fork with default branch in parent repo
 #
 # - creates a local tracking branch for every remote branch (if -a option is used)
 # - syncs current branch in remote fork with default branch in parent repo (all branches if -a option is used)
+# - syncs all tags from the parent repo
 # - only works if inside a local git repo that was cloned from a fork on GitHub
 # - requires GitHub CLI (https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
 # - must have parent repo set as default remote (run 'gh repo set-default')
@@ -130,3 +131,16 @@ if [ -n "${OPT_ALL_BRANCHES}" ]; then
         echo
     done
 fi
+
+origin_url="$(git remote get-url origin)"
+
+if [[ "${origin_url}" == git@* ]]; then
+    upstream_url="git@github.com:${parent_repo}.git"
+else
+    upstream_url="https://github.com/${parent_repo}.git"
+fi
+
+echo "fetching tags from upstream..."
+git fetch --prune-tags --force "${upstream_url}" 'refs/tags/*:refs/tags/*'
+echo
+ok "tags synced"
