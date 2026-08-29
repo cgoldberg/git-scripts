@@ -40,7 +40,7 @@ RESET="\e[0m"
 CROSS="\u2717"
 
 die() {
-    printf '%b%s%b %s\n' "${GREEN}" "$(printf '%b' "${CHECK}")" "${RESET}" "$*" >&2
+    printf '%b%s%b %s\n' "${GREEN}" "$(printf '%b' "${CROSS}")" "${RESET}" "$*" >&2
     exit 1
 }
 
