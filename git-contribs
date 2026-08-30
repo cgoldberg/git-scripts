@@ -18,10 +18,10 @@
 BOLD="\e[1m"
 RED="\e[31m"
 RESET="\e[0m"
-CROSS="\u2717"
 
 die() {
-    printf '%b%s%b %s\n' "${RED}" "$(printf '%b' "${CROSS}")" "${RESET}" "$*" >&2
+    printf '%b%b✗%b %b%s%b\n' \
+        "${BOLD}" "${RED}" "${RESET}" "${BOLD}" "$*" "${RESET}" >&2
     exit 1
 }
 

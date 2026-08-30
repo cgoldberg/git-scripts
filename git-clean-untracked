@@ -24,16 +24,16 @@ BOLD="\e[1m"
 GREEN="\e[32m"
 RED="\e[31m"
 RESET="\e[0m"
-CHECK="\u2713"
-CROSS="\u2717"
 
 die() {
-    printf '%b%s%b %s\n' "${RED}" "$(printf '%b' "${CROSS}")" "${RESET}" "$*" >&2
+    printf '%b%b✗%b %b%s%b\n' \
+        "${BOLD}" "${RED}" "${RESET}" "${BOLD}" "$*" "${RESET}" >&2
     exit 1
 }
 
 ok() {
-    printf '%b%s%b %s\n' "${GREEN}" "$(printf '%b' "${CHECK}")" "${RESET}" "$*" >&2
+    printf '%b%b✓%b %b%s%b\n' \
+        "${BOLD}" "${GREEN}" "${RESET}" "${BOLD}" "$*" "${RESET}" >&2
 }
 
 while getopts ":afih" opt; do
