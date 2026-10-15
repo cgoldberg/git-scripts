@@ -21,14 +21,12 @@ options:
   --since SINCE          date from (e.g.: '1 day', '2 weeks', '6 months, '04-01-2025')
 """
 
-
 import argparse
 import operator
 import os
 import re
 import subprocess
 import sys
-
 
 STAT_PATTERN = (
     r"^\s*(\d+) files changed, (\d+) insertions\(\+\), " r"(\d+) deletions\(\-\)$"
@@ -235,7 +233,7 @@ class GitColor:
         return text
 
 
-def parseGitLogData(stream, args, path):
+def parse_git_log_data(stream, args, path):
     class ParseCommitData:
         """A utility class to keep track of commit stats currently being parsed."""
 
@@ -296,7 +294,7 @@ def parseGitLogData(stream, args, path):
     return authorstats
 
 
-def gitStats(args, path=None):
+def git_stats(args, path=None):
     if path:
         old_path = os.getcwd()
         os.chdir(path)
@@ -311,17 +309,17 @@ def gitStats(args, path=None):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     if path:
         os.chdir(old_path)
-    return parseGitLogData(proc.stdout, args, path)
+    return parse_git_log_data(proc.stdout, args, path)
 
 
-def gitStatsAggregated(args):
+def git_stats_aggregated(args):
     if args.repos:
-        return reduce(operator.add, [gitStats(args, r) for r in args.repos])
+        return reduce(operator.add, [git_stats(args, r) for r in args.repos])
     else:
-        return gitStats(args)
+        return git_stats(args)
 
 
-def parseArgs():
+def parse_args():
 
     def formatter(prog):
         return argparse.HelpFormatter(prog, max_help_position=25)
@@ -331,7 +329,7 @@ def parseArgs():
     parser.add_argument(
         "--email",
         dest="email",
-        action='store_true',
+        action="store_true",
         help="include author email address (respects .mailmap)",
     )
     parser.add_argument(
@@ -380,8 +378,8 @@ def parseArgs():
 
 
 def main():
-    args = parseArgs()
-    stats = gitStatsAggregated(args)
+    args = parse_args()
+    stats = git_stats_aggregated(args)
 
     if not len(stats):
         print("No commits found.")
@@ -395,7 +393,7 @@ def main():
     author_length = min(author_length, MAX_NAME_LENGTH)
 
     print("author%s\tcommits\tfiles\tdelta\t(+)\t(-)" % (" " * (author_length - 6)))
-    print("-" * 100)
+    print("-" * 80)
     for author in stats:
         name_field = author[0:author_length]
         name_field = "%s%s" % (name_field, " " * (author_length - len(name_field)))
